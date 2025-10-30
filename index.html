@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neureon Group - Next-Gen Fraud Prevention</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Grotesk:wght@300;400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #00ff41;
+            --dark: #0a0a0a;
+            --darker: #050505;
+            --light: #1a1a1a;
+            --text: #e0e0e0;
+            --accent: #ff0040;
+            --warning: #ffaa00;
+        }
+
+        body {
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            background: var(--darker);
+            color: var(--text);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Matrix rain effect */
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 0.03;
+            z-index: 1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Header */
+        header {
+            padding: 30px 0;
+            border-bottom: 1px solid var(--light);
+            background: linear-gradient(180deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%);
+        }
+
+        .logo-link {
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .logo {
+            transition: all 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: translateX(5px);
+        }
+
+        .logo-icon {
+            animation: pulse 3s infinite;
+        }
+
+        .logo text {
+            filter: url(#glow);
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        @keyframes logoEntrance {
+            0% {
+                transform: translateX(-30px);
+                opacity: 0;
+            }
+            100% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .logo {
+            animation: logoEntrance 0.8s ease-out;
+        }
+
+        @keyframes neuralPulse {
+            0%, 100% {
+                opacity: 0.8;
+            }
+            50% {
+                opacity: 1;
+                filter: drop-shadow(0 0 10px rgba(0,255,65,0.8));
+            }
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 100px 0;
+            text-align: center;
+            position: relative;
+        }
+
+        .glitch {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 4rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            position: relative;
+            color: var(--primary);
+            margin-bottom: 20px;
+            text-shadow: 
+                0 0 10px rgba(0,255,65,0.5),
+                0 0 20px rgba(0,255,65,0.3),
+                0 0 30px rgba(0,255,65,0.2);
+            letter-spacing: -2px;
+        }
+
+        @media (max-width: 768px) {
+            .glitch {
+                font-size: 2.5rem;
+                letter-spacing: -1px;
+            }
+            .logo {
+                transform: scale(0.8);
+                transform-origin: left center;
+            }
+        }
+
+        .tagline {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 400;
+            color: var(--text);
+            margin-bottom: 40px;
+            opacity: 0.9;
+            letter-spacing: 0.5px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-bottom: 40px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Comparison Section */
+        .comparison {
+            background: var(--light);
+            padding: 60px 20px;
+            margin: 60px 0;
+            border: 1px solid var(--primary);
+            position: relative;
+        }
+
+        .comparison::before {
+            content: 'SYSTEM COMPARISON';
+            position: absolute;
+            top: -12px;
+            left: 30px;
+            background: var(--light);
+            padding: 0 10px;
+            color: var(--primary);
+            font-size: 0.8rem;
+        }
+
+        .vs-grid {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 40px;
+            align-items: center;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 768px) {
+            .vs-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            .vs-divider {
+                transform: rotate(90deg);
+                margin: 20px 0;
+            }
+        }
+
+        .old-way, .new-way {
+            padding: 20px;
+        }
+
+        .old-way {
+            opacity: 0.6;
+            border: 1px dashed #666;
+        }
+
+        .new-way {
+            border: 2px solid var(--primary);
+            box-shadow: 0 0 20px rgba(0,255,65,0.3);
+        }
+
+        .vs-title {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .old-way .vs-title {
+            color: #888;
+        }
+
+        .new-way .vs-title {
+            color: var(--primary);
+        }
+
+        .vs-divider {
+            font-size: 2rem;
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        .feature-list {
+            list-style: none;
+        }
+
+        .feature-list li {
+            padding: 8px 0;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .old-way li::before {
+            content: '✗';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+        }
+
+        .new-way li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+        }
+
+        /* Capabilities */
+        .capabilities {
+            padding: 80px 0;
+        }
+
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            text-align: center;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 50px;
+            position: relative;
+            letter-spacing: 1px;
+        }
+
+        .capability-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .capability-card {
+            background: var(--light);
+            border: 1px solid #333;
+            padding: 30px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .capability-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 0 30px rgba(0,255,65,0.2);
+            transform: translateY(-5px);
+        }
+
+        .capability-icon {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .capability-title {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        .capability-desc {
+            color: var(--text);
+            opacity: 0.8;
+            line-height: 1.6;
+        }
+
+        /* Stats */
+        .stats {
+            padding: 60px 0;
+            background: linear-gradient(135deg, rgba(0,255,65,0.1) 0%, rgba(255,0,64,0.1) 100%);
+            border-top: 1px solid var(--primary);
+            border-bottom: 1px solid var(--primary);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            text-align: center;
+        }
+
+        .stat-item {
+            position: relative;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--primary);
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text);
+            text-transform: uppercase;
+            opacity: 0.7;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 100px 0;
+            text-align: center;
+        }
+
+        .cta-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--primary);
+            letter-spacing: 1px;
+        }
+
+        .cta-subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            opacity: 0.8;
+        }
+
+        .email-form {
+            max-width: 500px;
+            margin: 0 auto;
+            display: flex;
+            gap: 10px;
+        }
+
+        .email-input {
+            flex: 1;
+            padding: 15px;
+            background: var(--light);
+            border: 1px solid #333;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 1rem;
+        }
+
+        .email-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .cta-button {
+            padding: 15px 30px;
+            background: var(--primary);
+            color: var(--dark);
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .cta-button:hover {
+            background: var(--text);
+            transform: translateX(5px);
+        }
+
+        /* Terminal Effect */
+        .terminal {
+            background: #000;
+            border: 1px solid var(--primary);
+            padding: 20px;
+            margin: 40px 0;
+            font-family: 'Courier New', monospace;
+            color: var(--primary);
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .terminal-line {
+            margin: 10px 0;
+            opacity: 0;
+            animation: fadeIn 0.5s forwards;
+        }
+
+        .terminal-line:nth-child(1) { animation-delay: 0.5s; }
+        .terminal-line:nth-child(2) { animation-delay: 1s; }
+        .terminal-line:nth-child(3) { animation-delay: 1.5s; }
+        .terminal-line:nth-child(4) { animation-delay: 2s; }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        .warning-text {
+            color: var(--warning);
+        }
+
+        .success-text {
+            color: var(--primary);
+        }
+
+        /* Footer */
+        footer {
+            padding: 30px 0;
+            text-align: center;
+            border-top: 1px solid var(--light);
+            opacity: 0.6;
+        }
+    </style>
+</head>
+<body>
+    <canvas class="matrix-bg" id="matrix"></canvas>
+
+    <header>
+        <div class="container">
+            <a href="#" class="logo-link">
+                <svg class="logo" width="250" height="50" viewBox="0 0 250 50">
+                    <!-- Hexagon circuit pattern -->
+                    <defs>
+                        <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" style="stop-color:#00ff41;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#00cc33;stop-opacity:1" />
+                        </linearGradient>
+                        <filter id="glow">
+                            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                            <feMerge>
+                                <feMergeNode in="coloredBlur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                    </defs>
+                    
+                    <!-- Neural network icon -->
+                    <g class="logo-icon">
+                        <!-- Hexagon shape -->
+                        <path d="M 10 25 L 20 10 L 35 10 L 45 25 L 35 40 L 20 40 Z" 
+                              fill="none" stroke="url(#logoGradient)" stroke-width="2" opacity="0.8"/>
+                        
+                        <!-- Neural nodes -->
+                        <circle cx="15" cy="20" r="2" fill="#00ff41"/>
+                        <circle cx="30" cy="15" r="2" fill="#00ff41"/>
+                        <circle cx="30" cy="35" r="2" fill="#00ff41"/>
+                        <circle cx="40" cy="25" r="3" fill="#00ff41" filter="url(#glow)"/>
+                        
+                        <!-- Connections -->
+                        <line x1="15" y1="20" x2="30" y2="15" stroke="#00ff41" stroke-width="1" opacity="0.6"/>
+                        <line x1="15" y1="20" x2="30" y2="35" stroke="#00ff41" stroke-width="1" opacity="0.6"/>
+                        <line x1="30" y1="15" x2="40" y2="25" stroke="#00ff41" stroke-width="1" opacity="0.6"/>
+                        <line x1="30" y1="35" x2="40" y2="25" stroke="#00ff41" stroke-width="1" opacity="0.6"/>
+                    </g>
+                    
+                    <!-- Text -->
+                    <text x="55" y="28" font-family="'Orbitron', 'Courier New', monospace" font-size="22" font-weight="700" fill="#00ff41">
+                        NEUREON
+                    </text>
+                    <text x="55" y="42" font-family="'Courier New', monospace" font-size="11" font-weight="400" fill="#888" letter-spacing="2">
+                        GROUP
+                    </text>
+                </svg>
+            </a>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <div class="status-badge">LAUNCHING SOON</div>
+            <h1 class="glitch">Fraud Prevention Reimagined</h1>
+            <p class="tagline">While banks play checkers, we're playing 4D chess with threat actors.</p>
+            
+            <div class="terminal">
+                <div class="terminal-line">$ scanning_threat_landscape...</div>
+                <div class="terminal-line"><span class="warning-text">[!] Traditional bank security: OUTDATED</span></div>
+                <div class="terminal-line"><span class="warning-text">[!] Attack vectors evolving: 47 new patterns/day</span></div>
+                <div class="terminal-line"><span class="success-text">[✓] NEUREON system: ADAPTIVE & READY</span></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="comparison">
+        <div class="container">
+            <div class="vs-grid">
+                <div class="old-way">
+                    <h3 class="vs-title">Legacy Banking</h3>
+                    <ul class="feature-list">
+                        <li>Rule-based detection from 2010</li>
+                        <li>48-hour fraud response time</li>
+                        <li>Siloed fraud & security teams</li>
+                        <li>Static risk scoring</li>
+                        <li>Reactive patching</li>
+                        <li>0.3% false positive rate (they think is good)</li>
+                    </ul>
+                </div>
+                <div class="vs-divider">VS</div>
+                <div class="new-way">
+                    <h3 class="vs-title">NEUREON</h3>
+                    <ul class="feature-list">
+                        <li>Adversarial AI that thinks like attackers</li>
+                        <li>Sub-millisecond threat neutralization</li>
+                        <li>Unified fraud-security ops</li>
+                        <li>Real-time behavioral analysis</li>
+                        <li>Proactive threat hunting</li>
+                        <li>0.001% false positive rate</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="capabilities">
+        <div class="container">
+            <h2 class="section-title">// CAPABILITIES PREVIEW</h2>
+            
+            <div class="capability-grid">
+                <div class="capability-card">
+                    <div class="capability-icon">🎯</div>
+                    <h3 class="capability-title">Red Team Simulation</h3>
+                    <p class="capability-desc">Continuous adversarial testing that simulates real attack patterns before threat actors discover them.</p>
+                </div>
+                
+                <div class="capability-card">
+                    <div class="capability-icon">⚡</div>
+                    <h3 class="capability-title">Identity Graph Analysis</h3>
+                    <p class="capability-desc">Multi-dimensional identity verification that catches synthetic identities banks can't even detect.</p>
+                </div>
+                
+                <div class="capability-card">
+                    <div class="capability-icon">🔍</div>
+                    <h3 class="capability-title">Payment Rail Hardening</h3>
+                    <p class="capability-desc">Real-time transaction analysis across all rails - ACH, wire, RTP, cards - with unified risk scoring.</p>
+                </div>
+                
+                <div class="capability-card">
+                    <div class="capability-icon">🛡️</div>
+                    <h3 class="capability-title">Zero-Day Fraud Prevention</h3>
+                    <p class="capability-desc">Behavioral anomaly detection that stops novel attack patterns before they become known threats.</p>
+                </div>
+                
+                <div class="capability-card">
+                    <div class="capability-icon">🧬</div>
+                    <h3 class="capability-title">Adaptive Defense Matrix</h3>
+                    <p class="capability-desc">Self-evolving protection that learns from every attempted exploit and hardens automatically.</p>
+                </div>
+                
+                <div class="capability-card">
+                    <div class="capability-icon">🌐</div>
+                    <h3 class="capability-title">Threat Intel Fusion</h3>
+                    <p class="capability-desc">Real-time correlation of global threat data with local attack patterns for predictive defense.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="stats">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">100x</span>
+                    <span class="stat-label">Faster Detection</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">$0</span>
+                    <span class="stat-label">Fraud Loss Target</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">24/7</span>
+                    <span class="stat-label">Threat Hunting</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">&lt;1ms</span>
+                    <span class="stat-label">Response Time</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <div class="container">
+            <h2 class="cta-title">The Future of Fraud Prevention</h2>
+            <p class="cta-subtitle">Stop playing defense. Start thinking like the adversary.</p>
+            
+            <form class="email-form" onsubmit="handleSubmit(event)">
+                <input type="email" class="email-input" placeholder="security@yourfintech.com" required>
+                <button type="submit" class="cta-button">Get Early Access</button>
+            </form>
+            
+            <p style="margin-top: 20px; opacity: 0.6; font-size: 0.9rem;">
+                Join the waitlist. Limited spots for early adopters.
+            </p>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Neureon Group LLC. Weaponizing defense. | neureon.group</p>
+        </div>
+    </footer>
+
+    <script>
+        // Matrix rain effect
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const matrix = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789@#$%^&*()*&^%+-/~{[|`]}";
+        const matrixArray = matrix.split("");
+
+        const fontSize = 10;
+        const columns = canvas.width / fontSize;
+
+        const drops = [];
+        for(let x = 0; x < columns; x++) {
+            drops[x] = 1;
+        }
+
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.04)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#00ff41';
+            ctx.font = fontSize + 'px monospace';
+
+            for(let i = 0; i < drops.length; i++) {
+                const text = matrixArray[Math.floor(Math.random() * matrixArray.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                if(drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+
+        setInterval(drawMatrix, 35);
+
+        // Handle form submission
+        function handleSubmit(e) {
+            e.preventDefault();
+            const email = e.target.querySelector('.email-input').value;
+            
+            // Show success message
+            const button = e.target.querySelector('.cta-button');
+            const originalText = button.textContent;
+            button.textContent = 'ACCESS GRANTED';
+            button.style.background = '#00ff41';
+            
+            // Reset after 3 seconds
+            setTimeout(() => {
+                button.textContent = originalText;
+                button.style.background = '';
+                e.target.reset();
+            }, 3000);
+        }
+
+        // Add glitch effect on hover
+        document.querySelector('.glitch').addEventListener('mouseenter', function() {
+            this.style.animation = 'glitch 0.3s infinite';
+        });
+
+        document.querySelector('.glitch').addEventListener('mouseleave', function() {
+            this.style.animation = 'none';
+        });
+
+        // Glitch animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes glitch {
+                0% {
+                    text-shadow: 2px 2px 0 rgba(0,255,65,0.3);
+                }
+                25% {
+                    text-shadow: -2px -2px 0 rgba(255,0,64,0.3);
+                }
+                50% {
+                    text-shadow: 2px -2px 0 rgba(0,255,65,0.3);
+                }
+                75% {
+                    text-shadow: -2px 2px 0 rgba(255,0,64,0.3);
+                }
+                100% {
+                    text-shadow: 2px 2px 0 rgba(0,255,65,0.3);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

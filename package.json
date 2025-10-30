@@ -1,0 +1,11 @@
+{
+  "name": "neureon-group-landing",
+  "version": "1.0.0",
+  "description": "Neureon Group - Next-Gen Fraud Prevention Platform",
+  "scripts": {
+    "dev": "python3 -m http.server 8000",
+    "build": "echo 'No build required for static HTML'"
+  },
+  "author": "Neureon Group LLC",
+  "license": "proprietary"
+}
