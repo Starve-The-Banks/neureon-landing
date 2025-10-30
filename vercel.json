@@ -1,12 +1,9 @@
 {
   "name": "neureon-group",
   "version": 2,
-  "builds": [],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
-    }
-  ],
-  "public": true
+  "framework": null,
+  "outputDirectory": ".",
+  "buildCommand": "",
+  "devCommand": "",
+  "installCommand": ""
 }
