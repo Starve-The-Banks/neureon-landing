@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMS Consent - Neureon Group</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: #050505;
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            color: #00ff41;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .consent-box {
+            background: #0a0a0a;
+            border: 2px solid #00ff41;
+            padding: 40px;
+            margin-bottom: 40px;
+        }
+        h2 {
+            color: #00ff41;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+        .legal-text {
+            color: #999;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+        .highlight {
+            color: #ffaa00;
+            font-weight: bold;
+        }
+        form {
+            margin-top: 40px;
+        }
+        .form-group {
+            margin-bottom: 25px;
+        }
+        label {
+            display: block;
+            color: #00ff41;
+            margin-bottom: 10px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        input[type="text"],
+        input[type="tel"],
+        input[type="email"] {
+            width: 100%;
+            padding: 12px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            color: #e0e0e0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+        }
+        input:focus {
+            outline: none;
+            border-color: #00ff41;
+        }
+        .checkbox-group {
+            margin: 30px 0;
+        }
+        .checkbox-wrapper {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        input[type="checkbox"] {
+            margin-top: 5px;
+            width: 20px;
+            height: 20px;
+            accent-color: #00ff41;
+        }
+        .checkbox-label {
+            color: #e0e0e0;
+            line-height: 1.6;
+            flex: 1;
+        }
+        .terms-box {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            padding: 20px;
+            margin: 20px 0;
+            max-height: 200px;
+            overflow-y: auto;
+            font-size: 13px;
+            color: #999;
+            line-height: 1.6;
+        }
+        .submit-btn {
+            background: #00ff41;
+            color: #000;
+            padding: 15px 40px;
+            border: 2px solid #00ff41;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.3s;
+            width: 100%;
+        }
+        .submit-btn:hover {
+            background: transparent;
+            color: #00ff41;
+        }
+        .submit-btn:disabled {
+            background: #333;
+            border-color: #333;
+            color: #666;
+            cursor: not-allowed;
+        }
+        .footer-note {
+            text-align: center;
+            color: #666;
+            font-size: 12px;
+            margin-top: 40px;
+            line-height: 1.6;
+        }
+        .success-message {
+            display: none;
+            background: rgba(0, 255, 65, 0.1);
+            border: 2px solid #00ff41;
+            padding: 20px;
+            text-align: center;
+            color: #00ff41;
+            margin-top: 20px;
+        }
+        .error-message {
+            display: none;
+            background: rgba(255, 0, 64, 0.1);
+            border: 2px solid #ff0040;
+            padding: 20px;
+            text-align: center;
+            color: #ff0040;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>SMS NOTIFICATION CONSENT</h1>
+        
+        <div class="consent-box">
+            <h2>TCPA CONSENT & AUTHORIZATION</h2>
+            
+            <div class="legal-text">
+                By providing your phone number and checking the consent box below, you expressly consent to receive text messages from <span class="highlight">Neureon Group LLC</span> regarding:
+            </div>
+            
+            <ul style="color: #999; margin: 20px 0; line-height: 1.8;">
+                <li>Fraud detection alerts and notifications</li>
+                <li>System updates and security advisories</li>
+                <li>Account verification codes</li>
+                <li>Service announcements and updates</li>
+                <li>Marketing communications about our fraud prevention services</li>
+            </ul>
+            
+            <div class="legal-text">
+                <strong>Message Frequency:</strong> Message frequency varies. You may receive up to 10 messages per month.
+            </div>
+            
+            <div class="legal-text">
+                <strong>Message & Data Rates:</strong> Standard message and data rates may apply based on your mobile phone service plan.
+            </div>
+            
+            <div class="legal-text">
+                <strong>Opt-Out:</strong> You can cancel SMS notifications at any time by texting <span class="highlight">STOP</span> to any message you receive from us. After texting STOP, you will receive one final SMS confirming your unsubscription.
+            </div>
+            
+            <div class="legal-text">
+                <strong>Help:</strong> For help, text <span class="highlight">HELP</span> to any message or contact us at <span class="highlight">hq@neureon.group</span>
+            </div>
+        </div>
+        
+        <form id="smsConsentForm">
+            <div class="form-group">
+                <label for="businessName">Business/Institution Name</label>
+                <input type="text" id="businessName" name="businessName" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="contactName">Contact Name</label>
+                <input type="text" id="contactName" name="contactName" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="phone">Mobile Phone Number</label>
+                <input type="tel" id="phone" name="phone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="555-555-5555" required>
+            </div>
+            
+            <div class="terms-box">
+                <strong>TERMS & CONDITIONS</strong><br><br>
+                By consenting to receive SMS notifications from Neureon Group LLC, you acknowledge and agree that:
+                <br><br>
+                1. Consent is not required as a condition of purchasing any goods or services from Neureon Group LLC.
+                <br><br>
+                2. You are the authorized user of the mobile phone number provided or have the authority to consent on behalf of the authorized user.
+                <br><br>
+                3. Messages may be sent using an automatic telephone dialing system or other automated technology.
+                <br><br>
+                4. Your consent data and phone number will be stored securely and will not be shared with third parties for marketing purposes.
+                <br><br>
+                5. Neureon Group LLC reserves the right to terminate SMS services at any time.
+                <br><br>
+                6. For questions about privacy, please review our Privacy Policy at neureon.group/privacy or contact hq@neureon.group.
+                <br><br>
+                7. Supported carriers include but are not limited to: AT&T, Verizon, T-Mobile, Sprint, MetroPCS, U.S. Cellular, and other major carriers.
+            </div>
+            
+            <div class="checkbox-group">
+                <div class="checkbox-wrapper">
+                    <input type="checkbox" id="consent" name="consent" required>
+                    <label for="consent" class="checkbox-label">
+                        I have read and agree to the terms above. I expressly consent to receive text messages from Neureon Group LLC at the mobile phone number provided. I understand that consent is not required as a condition of any purchase and that message and data rates may apply.
+                    </label>
+                </div>
+            </div>
+            
+            <button type="submit" class="submit-btn" disabled>SUBMIT CONSENT</button>
+            
+            <div class="success-message" id="successMessage">
+                ✓ Consent recorded successfully. You will receive a confirmation text message shortly.
+            </div>
+            
+            <div class="error-message" id="errorMessage">
+                ✗ There was an error processing your request. Please try again or contact hq@neureon.group
+            </div>
+        </form>
+        
+        <div class="footer-note">
+            Neureon Group LLC<br>
+            Questions? Email hq@neureon.group<br>
+            © 2024 Neureon Group LLC. All rights reserved.
+        </div>
+    </div>
+    
+    <script>
+        // Enable submit button only when checkbox is checked
+        document.getElementById('consent').addEventListener('change', function() {
+            document.querySelector('.submit-btn').disabled = !this.checked;
+        });
+        
+        // Format phone number as user types
+        document.getElementById('phone').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length >= 6) {
+                value = value.slice(0, 3) + '-' + value.slice(3, 6) + '-' + value.slice(6, 10);
+            } else if (value.length >= 3) {
+                value = value.slice(0, 3) + '-' + value.slice(3);
+            }
+            e.target.value = value;
+        });
+        
+        // Handle form submission
+        document.getElementById('smsConsentForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                businessName: document.getElementById('businessName').value,
+                contactName: document.getElementById('contactName').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                consentGiven: document.getElementById('consent').checked,
+                timestamp: new Date().toISOString()
+            };
+            
+            // Here you would normally send to your API
+            // For now, just show success message
+            console.log('Consent data:', formData);
+            
+            // Show success message
+            document.getElementById('successMessage').style.display = 'block';
+            document.getElementById('errorMessage').style.display = 'none';
+            
+            // Reset form after 3 seconds
+            setTimeout(() => {
+                this.reset();
+                document.querySelector('.submit-btn').disabled = true;
+                document.getElementById('successMessage').style.display = 'none';
+            }, 3000);
+        });
+    </script>
+</body>
+</html>
