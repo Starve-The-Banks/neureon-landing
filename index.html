@@ -1146,6 +1146,350 @@
             opacity: 1;
             transform: translateY(0);
         }
+
+        /* ========== MOBILE RESPONSIVE ========== */
+        @media (max-width: 768px) {
+            /* Navigation */
+            .nav-content {
+                padding: 0 8px;
+            }
+            
+            .logo {
+                font-size: 1.3rem;
+                letter-spacing: 2px;
+            }
+            
+            .nav-status {
+                font-size: 0.6rem;
+                padding: 6px 10px;
+                gap: 6px;
+            }
+            
+            .nav-status span {
+                display: none;
+            }
+            
+            .nav-status::after {
+                content: 'LIVE';
+            }
+
+            /* Hero */
+            .hero {
+                padding: 100px 0 60px;
+                min-height: auto;
+            }
+            
+            .hero-badge {
+                font-size: 0.6rem;
+                padding: 6px 12px;
+                letter-spacing: 1px;
+            }
+            
+            .hero h1 {
+                font-size: 2.2rem;
+                letter-spacing: -1px;
+                margin-bottom: 16px;
+            }
+            
+            .hero-subtitle {
+                font-size: 1rem;
+                margin-bottom: 32px;
+                padding: 0 10px;
+            }
+
+            /* Threat Counter - Stack Vertically */
+            .threat-counter {
+                flex-direction: column;
+                gap: 16px;
+                padding: 20px;
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .counter-divider {
+                width: 80%;
+                height: 1px;
+            }
+            
+            .counter-number {
+                font-size: 2rem;
+            }
+            
+            .counter-label {
+                font-size: 0.6rem;
+            }
+
+            /* CTA Buttons */
+            .hero-cta {
+                flex-direction: column;
+                align-items: center;
+                gap: 12px;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 280px;
+                justify-content: center;
+                padding: 14px 24px;
+                font-size: 0.8rem;
+            }
+
+            /* Sections */
+            .demo-section,
+            .speed-section,
+            .features-section {
+                padding: 60px 0;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
+            
+            .section-subtitle {
+                font-size: 0.95rem;
+                padding: 0 10px;
+            }
+            
+            .section-tag {
+                font-size: 0.65rem;
+            }
+
+            /* Demo Cards */
+            .demo-card {
+                padding: 20px;
+            }
+            
+            .demo-card-title {
+                font-size: 0.75rem;
+            }
+            
+            .demo-card-details {
+                font-size: 0.65rem;
+            }
+            
+            .demo-card-risk {
+                font-size: 0.8rem;
+            }
+
+            /* Demo Result */
+            .demo-result {
+                padding: 20px;
+            }
+            
+            .result-header {
+                flex-direction: column;
+                gap: 16px;
+                text-align: center;
+            }
+            
+            .result-decision {
+                font-size: 1.8rem;
+            }
+            
+            .result-score {
+                text-align: center;
+            }
+            
+            .result-score-value {
+                font-size: 2.2rem;
+            }
+            
+            .result-patterns {
+                grid-template-columns: 1fr;
+            }
+            
+            .pattern-item {
+                font-size: 0.65rem;
+                padding: 10px 12px;
+            }
+
+            /* Stats */
+            .stats-section {
+                padding: 40px 0;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+            
+            .stat-card {
+                padding: 20px 12px;
+            }
+            
+            .stat-value {
+                font-size: 1.8rem;
+            }
+            
+            .stat-label {
+                font-size: 0.55rem;
+            }
+
+            /* Speed Section */
+            .speed-comparison {
+                gap: 16px;
+            }
+            
+            .speed-card {
+                padding: 24px 16px;
+            }
+            
+            .speed-time {
+                font-size: 2.5rem;
+            }
+            
+            .speed-label {
+                font-size: 0.65rem;
+            }
+            
+            .speed-desc {
+                font-size: 0.8rem;
+            }
+            
+            .speed-vs {
+                font-size: 1.2rem;
+                padding: 8px 0;
+            }
+            
+            .speed-race {
+                padding: 20px;
+                margin-top: 32px;
+            }
+            
+            .race-label {
+                font-size: 0.65rem;
+            }
+
+            /* Tech Grid */
+            .tech-section {
+                padding: 40px 0;
+            }
+            
+            .tech-grid {
+                gap: 12px;
+            }
+            
+            .tech-item {
+                padding: 16px 12px;
+            }
+            
+            .tech-value {
+                font-size: 1.5rem;
+            }
+            
+            .tech-label {
+                font-size: 0.55rem;
+            }
+
+            /* Features */
+            .feature-card {
+                padding: 24px 20px;
+            }
+            
+            .feature-title {
+                font-size: 0.85rem;
+            }
+            
+            .feature-desc {
+                font-size: 0.8rem;
+            }
+
+            /* CTA Section */
+            .cta-section {
+                padding: 60px 0;
+            }
+            
+            .cta-title {
+                font-size: 1.5rem;
+                padding: 0 10px;
+            }
+            
+            .cta-subtitle {
+                font-size: 0.95rem;
+                padding: 0 20px;
+            }
+
+            /* Pattern Modal */
+            .pattern-modal-content {
+                padding: 20px;
+                margin: 10px;
+                max-height: 90vh;
+                overflow-y: auto;
+            }
+            
+            .pattern-modal-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 12px;
+            }
+            
+            .pattern-modal-title {
+                font-size: 0.9rem;
+                word-break: break-all;
+            }
+            
+            .pattern-modal-body h4 {
+                font-size: 0.85rem;
+            }
+            
+            .pattern-modal-body p {
+                font-size: 0.8rem;
+            }
+            
+            .ttp-tag {
+                font-size: 0.6rem;
+                padding: 3px 8px;
+            }
+            
+            .pattern-modal-risk {
+                flex-direction: column;
+                gap: 8px;
+                text-align: center;
+            }
+            
+            .pattern-modal-risk-value {
+                font-size: 1.2rem;
+            }
+
+            /* Footer */
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 16px;
+            }
+            
+            .footer-links {
+                gap: 20px;
+            }
+            
+            .footer-links a,
+            .footer-copy {
+                font-size: 0.75rem;
+            }
+        }
+
+        /* Extra small devices */
+        @media (max-width: 380px) {
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+            
+            .hero-badge {
+                font-size: 0.5rem;
+            }
+            
+            .counter-number {
+                font-size: 1.6rem;
+            }
+            
+            .stat-value {
+                font-size: 1.5rem;
+            }
+            
+            .speed-time {
+                font-size: 2rem;
+            }
+        }
     </style>
 </head>
 <body>
