@@ -570,6 +570,157 @@
             border-left: 3px solid var(--neon-red);
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .pattern-item:hover {
+            background: rgba(255, 0, 64, 0.2);
+            transform: translateX(4px);
+        }
+
+        /* Pattern Modal */
+        .pattern-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .pattern-modal.active {
+            display: flex;
+        }
+
+        .pattern-modal-content {
+            background: var(--card-bg);
+            border: 1px solid var(--neon-red);
+            border-radius: 12px;
+            max-width: 600px;
+            width: 100%;
+            padding: 32px;
+            position: relative;
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .pattern-modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .pattern-modal-close:hover {
+            color: var(--neon-red);
+        }
+
+        .pattern-modal-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .pattern-modal-icon {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 0, 64, 0.2);
+            border: 1px solid var(--neon-red);
+            border-radius: 8px;
+            font-size: 1.5rem;
+        }
+
+        .pattern-modal-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--neon-red);
+        }
+
+        .pattern-modal-category {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .pattern-modal-body h4 {
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            margin-top: 20px;
+        }
+
+        .pattern-modal-body h4:first-child {
+            margin-top: 0;
+        }
+
+        .pattern-modal-body p {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            line-height: 1.7;
+        }
+
+        .pattern-modal-ttps {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .ttp-tag {
+            padding: 4px 12px;
+            background: rgba(255, 107, 0, 0.15);
+            border: 1px solid rgba(255, 107, 0, 0.3);
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--neon-orange);
+        }
+
+        .pattern-modal-risk {
+            margin-top: 24px;
+            padding: 16px;
+            background: rgba(255, 0, 64, 0.1);
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .pattern-modal-risk-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .pattern-modal-risk-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--neon-red);
         }
 
         .pattern-icon {
@@ -1291,6 +1442,34 @@
         </div>
     </section>
 
+    <!-- Pattern Detail Modal -->
+    <div class="pattern-modal" id="pattern-modal">
+        <div class="pattern-modal-content">
+            <button class="pattern-modal-close" onclick="closePatternModal()">&times;</button>
+            <div class="pattern-modal-header">
+                <div class="pattern-modal-icon" id="modal-icon">⚠</div>
+                <div>
+                    <div class="pattern-modal-title" id="modal-title">PATTERN_NAME</div>
+                    <div class="pattern-modal-category" id="modal-category">Category</div>
+                </div>
+            </div>
+            <div class="pattern-modal-body">
+                <h4>What It Detects</h4>
+                <p id="modal-description">Description here</p>
+                
+                <h4>How We Catch It</h4>
+                <p id="modal-method">Method here</p>
+                
+                <h4>Associated TTPs</h4>
+                <div class="pattern-modal-ttps" id="modal-ttps"></div>
+            </div>
+            <div class="pattern-modal-risk">
+                <span class="pattern-modal-risk-label">Risk Contribution</span>
+                <span class="pattern-modal-risk-value" id="modal-risk">+40%</span>
+            </div>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer>
         <div class="container">
@@ -1552,6 +1731,209 @@
             return fallbacks[type];
         }
 
+        // Pattern descriptions database
+        const patternInfo = {
+            'ITIN_AS_SSN': {
+                icon: '🆔',
+                category: 'Identity Fraud',
+                description: 'The SSN provided begins with 9XX, which is the range reserved for Individual Taxpayer Identification Numbers (ITINs). ITINs are issued to non-citizens and cannot be used as SSNs for credit applications.',
+                method: 'We validate the first three digits (Area Number) against SSA issuance rules. Numbers starting with 9 are ITINs, not SSNs. This is a hard rule—no legitimate SSN starts with 9.',
+                ttps: ['CPN Fraud', 'Synthetic Identity', 'ITIN Misuse'],
+                risk: '+45%'
+            },
+            'EIN_AS_SSN': {
+                icon: '🏢',
+                category: 'Identity Fraud',
+                description: 'The SSN falls within the 80-95 prefix range commonly used for Employer Identification Numbers (EINs). Fraudsters sometimes use EINs as fake SSNs.',
+                method: 'Cross-reference against known EIN prefix ranges. While some legitimate SSNs exist in this range, combined with other signals it indicates synthetic identity construction.',
+                ttps: ['Business Identity Fraud', 'EIN Abuse', 'Synthetic Identity'],
+                risk: '+40%'
+            },
+            'NEOBANK_TIER1': {
+                icon: '🏦',
+                category: 'Banking Risk',
+                description: 'Account is held at a Tier 1 high-risk neobank (Chime, Cash App, Varo). These banks offer instant account opening with minimal KYC, making them prime targets for synthetic identity fraud.',
+                method: 'We maintain a database of 12+ neobank routing numbers categorized by risk tier. Tier 1 banks have instant account opening, virtual cards, and minimal identity verification.',
+                ttps: ['Neobank Exploitation', 'Instant Account Fraud', 'KYC Bypass'],
+                risk: '+40%'
+            },
+            'NEOBANK_TIER2': {
+                icon: '🏦',
+                category: 'Banking Risk',
+                description: 'Account is held at a Tier 2 moderate-risk neobank (Evolve Bank, Green Dot, Mercury). These banks are API-based and frequently used in fintech fraud schemes.',
+                method: 'Routing number matched against our neobank database. Tier 2 banks have more verification but are still exploited through fintech partnerships.',
+                ttps: ['Fintech Fraud', 'API Account Opening', 'Synthetic Banking'],
+                risk: '+30%'
+            },
+            'CRYPTO_AS_INCOME': {
+                icon: '₿',
+                category: 'Income Fraud',
+                description: 'Deposits from cryptocurrency exchanges (Coinbase, Kraken, Binance) are being presented as employment income. This is a major red flag for money laundering and synthetic income.',
+                method: 'We scan deposit descriptions for crypto exchange names and blockchain-related keywords. Legitimate employment income comes from registered businesses, not crypto platforms.',
+                ttps: ['Crypto Laundering', 'Synthetic Income', 'Money Laundering'],
+                risk: '+50%'
+            },
+            'HIGH_RISK_CARRIER': {
+                icon: '📱',
+                category: 'Phone Risk',
+                description: 'Phone is registered with a high-risk prepaid carrier (Mint, Cricket, Metro, Boost). These carriers require minimal identity verification and are commonly used in fraud.',
+                method: 'Carrier lookup against our risk-tiered database of 20+ carriers. Prepaid carriers are categorized by ease of anonymous acquisition.',
+                ttps: ['Prepaid Fraud', 'Anonymous Phone', 'Burner Phone'],
+                risk: '+40%'
+            },
+            'VOIP_PHONE': {
+                icon: '📞',
+                category: 'Phone Risk',
+                description: 'Phone number is a VOIP line (Google Voice, TextNow, Talkatone). VOIP numbers can be created instantly online without any identity verification.',
+                method: 'Carrier identification reveals VOIP providers. These numbers are trivially easy to create and dispose of, making them ideal for fraud.',
+                ttps: ['VOIP Fraud', 'Disposable Phone', 'SIM Swap Setup'],
+                risk: '+50%'
+            },
+            '31_DAY_WARMING': {
+                icon: '⏱️',
+                category: 'Account Manipulation',
+                description: 'Account is exactly 28-35 days old—the minimum age required by Plaid and many lenders. Fraudsters "warm" accounts by waiting this exact period before applying.',
+                method: 'Statistical analysis shows legitimate accounts have random age distributions. Accounts clustered at exactly 31 days indicate deliberate warming for verification gaming.',
+                ttps: ['Account Warming', 'Plaid Gaming', 'Synthetic History'],
+                risk: '+45%'
+            },
+            'MICRO_TRANSACTION_WARMING': {
+                icon: '💳',
+                category: 'Account Manipulation',
+                description: 'Transaction history shows a pattern of small, regular purchases designed to create the appearance of legitimate account activity.',
+                method: 'We analyze transaction patterns for artificial regularity. Real spending is chaotic; warming patterns show suspiciously consistent small purchases.',
+                ttps: ['Transaction Warming', 'Synthetic History', 'Verification Gaming'],
+                risk: '+30%'
+            },
+            'SUSPICIOUS_LLC_STATE_WY': {
+                icon: '🏛️',
+                category: 'Business Fraud',
+                description: 'Business is registered in Wyoming, the #1 state for shell companies. Wyoming offers complete anonymity, no state taxes, and same-day LLC formation.',
+                method: 'State of incorporation cross-referenced with shell company haven list. Wyoming LLCs with new accounts and instant payroll are almost always fraudulent.',
+                ttps: ['Shell Company', 'Wyoming LLC', 'Business Credit Fraud'],
+                risk: '+50%'
+            },
+            'SUSPICIOUS_LLC_STATE_DE': {
+                icon: '🏛️',
+                category: 'Business Fraud',
+                description: 'Business is registered in Delaware, a common state for both legitimate businesses and shell companies due to business-friendly laws.',
+                method: 'Delaware registration alone isn\'t definitive, but combined with new formation, instant credit requests, or neobank accounts, it indicates shell company fraud.',
+                ttps: ['Shell Company', 'Delaware LLC', 'Corporate Fraud'],
+                risk: '+35%'
+            },
+            'NEW_LLC': {
+                icon: '📅',
+                category: 'Business Fraud',
+                description: 'LLC was formed less than 30 days ago. Legitimate businesses rarely apply for significant credit immediately after formation.',
+                method: 'Business formation date compared against application date. Brand new LLCs requesting credit are typically shelf company purchases or synthetic business identities.',
+                ttps: ['Shelf Company', 'Instant Business', 'Credit Stacking'],
+                risk: '+40%'
+            },
+            'INSTANT_PAYROLL': {
+                icon: '💰',
+                category: 'Income Fraud',
+                description: 'Payroll was set up within days of LLC formation. This is a key indicator of Wyoming payroll fraud—creating fake businesses to generate "verified" income.',
+                method: 'We compare LLC formation date to first payroll deposit. Legitimate businesses take weeks or months to set up payroll; instant payroll is synthetic income.',
+                ttps: ['Wyoming Payroll Fraud', 'Synthetic Income', 'Fake Employment'],
+                risk: '+35%'
+            },
+            'IMPOSSIBLE_CREDIT_VELOCITY': {
+                icon: '📈',
+                category: 'Credit Fraud',
+                description: 'Credit score is impossibly high for the age of the credit file. A 750+ score with less than 2 years of history violates credit scoring mathematics.',
+                method: 'Credit score vs. file age analysis. Achieving 750+ requires years of history. High scores on thin files indicate tradeline purchasing or piggybacking.',
+                ttps: ['Tradeline Fraud', 'Credit Piggybacking', 'Synthetic Identity'],
+                risk: '+45%'
+            },
+            'AU_TRADELINE_STUFFING': {
+                icon: '👥',
+                category: 'Credit Fraud',
+                description: 'Excessive authorized user accounts detected. Fraudsters purchase AU tradelines to artificially boost credit scores on synthetic identities.',
+                method: 'Count of AU accounts compared against normal distribution. More than 5 AU accounts is statistically anomalous and indicates tradeline purchasing.',
+                ttps: ['Tradeline Renting', 'Credit Piggybacking', 'AU Fraud'],
+                risk: '+40%'
+            },
+            'HIGH_VELOCITY_24H': {
+                icon: '⚡',
+                category: 'Velocity Abuse',
+                description: 'Multiple credit applications submitted within 24 hours. This indicates loan stacking—applying everywhere before denials can be reported.',
+                method: 'Application velocity tracking across our network. Legitimate applicants apply to 1-2 places; fraudsters blast applications to maximize take before detection.',
+                ttps: ['Loan Stacking', 'Bust Out', 'Velocity Abuse'],
+                risk: '+35%'
+            },
+            'EXTREME_VELOCITY_24H': {
+                icon: '🚨',
+                category: 'Velocity Abuse',
+                description: '5+ applications in 24 hours is extreme velocity indicating active bust-out fraud in progress.',
+                method: 'Real-time velocity monitoring. This level of activity is never legitimate and triggers immediate auto-deny.',
+                ttps: ['Bust Out Fraud', 'Loan Stacking', 'Fraud Ring'],
+                risk: '+50%'
+            },
+            'AUTOGEN_EMAIL': {
+                icon: '📧',
+                category: 'Identity Fraud',
+                description: 'Email address appears to be auto-generated (random characters, sequential numbers). Synthetic identities use programmatically created emails.',
+                method: 'Regex pattern matching against known auto-generation patterns. Emails like "john.smith847293@gmail.com" indicate bot-created identities.',
+                ttps: ['Synthetic Identity', 'Bot Signup', 'Fake Email'],
+                risk: '+30%'
+            },
+            'NEW_EMAIL': {
+                icon: '📬',
+                category: 'Identity Fraud',
+                description: 'Email address was created very recently. Legitimate applicants have established email histories; new emails suggest identity fabrication.',
+                method: 'Email age verification through provider APIs and OSINT. Emails less than 30 days old combined with other signals indicate synthetic identity.',
+                ttps: ['Synthetic Identity', 'Fresh Email', 'Identity Fabrication'],
+                risk: '+25%'
+            },
+            'THIN_FILE': {
+                icon: '📄',
+                category: 'Credit Risk',
+                description: 'Credit file has minimal history—few tradelines and short credit age. While not fraud alone, thin files are the foundation of synthetic identities.',
+                method: 'Tradeline count and credit age analysis. Thin files combined with other signals (neobank, AU accounts, new email) indicate synthetic identity construction.',
+                ttps: ['Synthetic Identity', 'New Credit', 'Credit Building'],
+                risk: '+20%'
+            },
+            'AUTO_DENY_COMBO': {
+                icon: '🚫',
+                category: 'Critical Pattern',
+                description: 'Multiple high-risk patterns triggered simultaneously, activating automatic denial. These combinations are virtually never seen in legitimate applications.',
+                method: 'Pattern combination analysis. Certain combinations (neobank + crypto income, Wyoming LLC + neobank + warming) have near-100% fraud rates and trigger instant denial.',
+                ttps: ['Pattern Combination', 'Multi-Vector Fraud', 'Synthetic Identity'],
+                risk: '+100%'
+            }
+        };
+
+        function showPatternModal(code) {
+            const info = patternInfo[code];
+            if (!info) return;
+
+            document.getElementById('modal-icon').textContent = info.icon;
+            document.getElementById('modal-title').textContent = code;
+            document.getElementById('modal-category').textContent = info.category;
+            document.getElementById('modal-description').textContent = info.description;
+            document.getElementById('modal-method').textContent = info.method;
+            document.getElementById('modal-risk').textContent = info.risk;
+
+            const ttpsContainer = document.getElementById('modal-ttps');
+            ttpsContainer.innerHTML = info.ttps.map(ttp => `<span class="ttp-tag">${ttp}</span>`).join('');
+
+            document.getElementById('pattern-modal').classList.add('active');
+        }
+
+        function closePatternModal() {
+            document.getElementById('pattern-modal').classList.remove('active');
+        }
+
+        // Close modal on outside click
+        document.getElementById('pattern-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'pattern-modal') closePatternModal();
+        });
+
+        // Close modal on escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closePatternModal();
+        });
+
         function renderResult(data) {
             const resultDiv = document.getElementById('demo-result');
             const isApprove = data.decision === 'APPROVE';
@@ -1582,9 +1964,9 @@
                     </div>
                     <div class="result-patterns">
                         ${data.patterns.map(p => `
-                            <div class="pattern-item">
-                                <span class="pattern-icon">⚠</span>
-                                <span>${p.code || p}</span>
+                            <div class="pattern-item" onclick="showPatternModal('${p.code || p}')">
+                            <span class="pattern-icon">⚠</span>
+                            <span>${p.code || p}</span>
                             </div>
                         `).join('')}
                     </div>
