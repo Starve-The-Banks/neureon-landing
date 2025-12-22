@@ -271,17 +271,6 @@
 
         .counter-item {
             text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .counter-sparkline {
-            width: 60px;
-            height: 16px;
-            opacity: 0.6;
-            margin-top: 4px;
         }
 
         .counter-number {
@@ -304,6 +293,7 @@
             color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 1px;
+            margin-top: 12px;
         }
 
         .counter-divider {
@@ -1392,10 +1382,6 @@
                 font-size: 0.6rem;
             }
 
-            .counter-sparkline {
-                width: 50px;
-                height: 14px;
-            }
 
             .hero-cta {
                 flex-direction: column;
@@ -1667,24 +1653,21 @@
                     Built from 800+ threat actor playbooks. Detects synthetic identities, neobank exploitation, and crypto laundering that banks miss.
                 </p>
 
-                <!-- Live Threat Counter with Sparklines -->
+                <!-- Live Threat Counter -->
                 <div class="threat-counter">
                     <div class="counter-item">
                         <div class="counter-number" id="threats-blocked">0</div>
                         <div class="counter-label">Threats Blocked Today</div>
-                        <canvas class="counter-sparkline" id="sparkline-threats"></canvas>
                     </div>
                     <div class="counter-divider"></div>
                     <div class="counter-item">
                         <div class="counter-number red" id="money-saved">$0</div>
                         <div class="counter-label">Fraud Prevented</div>
-                        <canvas class="counter-sparkline" id="sparkline-money"></canvas>
                     </div>
                     <div class="counter-divider"></div>
                     <div class="counter-item">
                         <div class="counter-number" id="detection-rate">100%</div>
                         <div class="counter-label">Detection Rate</div>
-                        <canvas class="counter-sparkline" id="sparkline-rate"></canvas>
                     </div>
                 </div>
 
@@ -2181,72 +2164,6 @@
             requestAnimationFrame(animateNetwork);
         }
 
-        // ========== SPARKLINE ANIMATIONS ==========
-        class Sparkline {
-            constructor(canvasId, color) {
-                this.canvas = document.getElementById(canvasId);
-                if (!this.canvas) return;
-                this.ctx = this.canvas.getContext('2d');
-                this.color = color;
-                this.data = [];
-                this.maxPoints = 25;
-                
-                this.canvas.width = 60;
-                this.canvas.height = 20;
-                
-                for (let i = 0; i < this.maxPoints; i++) {
-                    this.data.push(Math.random() * 0.4 + 0.5);
-                }
-                
-                this.animate();
-            }
-            
-            animate() {
-                if (!this.canvas) return;
-                
-                this.data.shift();
-                const lastVal = this.data[this.data.length - 1];
-                const newVal = Math.max(0.2, Math.min(1, lastVal + (Math.random() - 0.5) * 0.25));
-                this.data.push(newVal);
-                
-                this.draw();
-                setTimeout(() => requestAnimationFrame(() => this.animate()), 120);
-            }
-            
-            draw() {
-                const { ctx, canvas, data, color } = this;
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                
-                const w = canvas.width;
-                const h = canvas.height;
-                const step = w / (data.length - 1);
-                
-                ctx.beginPath();
-                ctx.moveTo(0, h - data[0] * h);
-                
-                for (let i = 1; i < data.length; i++) {
-                    ctx.lineTo(i * step, h - data[i] * h);
-                }
-                
-                ctx.strokeStyle = color;
-                ctx.lineWidth = 1.5;
-                ctx.shadowColor = color;
-                ctx.shadowBlur = 6;
-                ctx.stroke();
-                ctx.shadowBlur = 0;
-                
-                ctx.lineTo(w, h);
-                ctx.lineTo(0, h);
-                ctx.closePath();
-                
-                const gradient = ctx.createLinearGradient(0, 0, 0, h);
-                gradient.addColorStop(0, color + '40');
-                gradient.addColorStop(1, 'transparent');
-                ctx.fillStyle = gradient;
-                ctx.fill();
-            }
-        }
-
         // ========== INIT BACKGROUND ANIMATIONS ==========
         const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         
@@ -2259,13 +2176,6 @@
             // Start particle network
             initNodes();
             animateNetwork();
-            
-            // Start sparklines
-            setTimeout(() => {
-                new Sparkline('sparkline-threats', '#00ff41');
-                new Sparkline('sparkline-money', '#ff0040');
-                new Sparkline('sparkline-rate', '#00ff41');
-            }, 100);
         }
 
         // ========== GSAP SCROLL ANIMATIONS ==========
