@@ -2355,7 +2355,7 @@
             resultDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
             try {
-                const response = await fetch(`${API_URL}/api/v4/detect`, {
+                const response = await fetch(`${API_URL}/api/v2/detect`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },
                     body: JSON.stringify(demoScenarios[type])
@@ -2453,7 +2453,7 @@
             if (caseData.authorized_user_accounts) payload.authorized_user_accounts = caseData.authorized_user_accounts;
 
             try {
-                const response = await fetch(`${API_URL}/api/v4/detect`, {
+                const response = await fetch(`${API_URL}/api/v2/detect`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },
                     body: JSON.stringify(payload)
