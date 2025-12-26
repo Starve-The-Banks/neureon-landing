@@ -2467,6 +2467,37 @@
 
         // ========== PATTERN INFO ==========
         const patternInfo = {
+            // V1 Calibrated Patterns
+            'V1-POSSIBLE_ITIN': { category: 'Identity Fraud', description: 'SSN begins with 9XX (ITIN/CPN range). These numbers are used for tax purposes by non-citizens or sold as "Credit Privacy Numbers".', method: 'Validate first 3 digits against SSA issuance rules. 9XX prefix was never issued as SSN.', ttps: ['CPN Fraud', 'Synthetic Identity', 'Credit Repair Scam'], risk: '+95%' },
+            'V1-INVALID_SSN_AREA': { category: 'Identity Fraud', description: 'SSN area code is invalid (000 or 666). These were never issued by SSA.', method: 'Check first 3 digits against known invalid ranges.', ttps: ['Synthetic Identity', 'Fabricated SSN'], risk: '+100%' },
+            'V1-EIN_RANGE_DETECTED': { category: 'Identity Fraud', description: 'SSN falls within EIN prefix range (80-95). May be business tax ID used as personal SSN.', method: 'Cross-reference against known EIN ranges.', ttps: ['EIN Abuse', 'Synthetic Identity'], risk: '+85%' },
+            'V1-IMPOSSIBLE_CREDIT_VELOCITY': { category: 'Synthetic Identity', description: 'Credit score too high for credit file age. Impossible to build 700+ score in under 2 years legitimately.', method: 'Compare credit score against file age. Flag young files with high scores.', ttps: ['Tradeline Renting', 'Piggybacking', 'Synthetic Identity'], risk: '+70%' },
+            'V1-AU_TRADELINE_STUFFING': { category: 'Synthetic Identity', description: 'Excessive authorized user accounts (6+). Common in synthetic identity building.', method: 'Count AU tradelines. 6+ is strong synthetic indicator.', ttps: ['Tradeline Renting', 'Piggybacking', 'Credit Stacking'], risk: '+65%' },
+            'V1-AU_TRADELINE_ELEVATED': { category: 'Synthetic Identity', description: 'Elevated authorized user accounts (4-5). Borderline suspicious.', method: 'Count AU tradelines. 4-5 warrants additional verification.', ttps: ['Tradeline Renting', 'Piggybacking'], risk: '+35%' },
+            'V1-APPLICATION_VELOCITY_ABUSE': { category: 'Velocity Abuse', description: 'Too many applications in 24 hours (4+). Indicates loan stacking or bust-out attempt.', method: 'Track application velocity across institutions.', ttps: ['Loan Stacking', 'Bust Out', 'First Party Fraud'], risk: '+60%' },
+            'V1-NO_ADDRESS_HISTORY': { category: 'Synthetic Identity', description: 'No previous address history. Ghost identity with no footprint.', method: 'Check address history depth. Zero history is major red flag.', ttps: ['Synthetic Identity', 'Ghost Profile', 'Identity Fabrication'], risk: '+45%' },
+            'V1-HIGH_RISK_CARRIER': { category: 'Phone Risk', description: 'Prepaid/MVNO carrier detected (Mint, Cricket, Metro, Boost). Higher fraud correlation.', method: 'Carrier identification and risk scoring.', ttps: ['Prepaid Fraud', 'Burner Phone', 'Disposable Identity'], risk: '+25%' },
+            'V1-EMULATOR_DETECTED': { category: 'Device Fraud', description: 'Emulator detected. Strong indicator of fraud farm operation.', method: 'Device fingerprinting and emulator detection.', ttps: ['Fraud Farm', 'Device Spoofing', 'Bot Attack'], risk: '+85%' },
+            'V1-VPN_DETECTED': { category: 'Device Fraud', description: 'VPN detected. Location masking, possible fraud concealment.', method: 'IP analysis and VPN detection.', ttps: ['Location Spoofing', 'Fraud Concealment'], risk: '+30%' },
+            'V1-DATACENTER_IP': { category: 'Device Fraud', description: 'Datacenter IP detected. Indicates automated attack or fraud farm.', method: 'IP classification against datacenter ranges.', ttps: ['Bot Attack', 'Fraud Farm', 'Automated Fraud'], risk: '+35%' },
+            'V1-INSTANT_BUSINESS_CREDIT_FRAUD': { category: 'Business Fraud', description: 'New LLC (<90 days) requesting excessive credit (>$25k). Classic shell company scheme.', method: 'Cross-reference business age against credit request.', ttps: ['Shell Company', 'Wyoming LLC Fraud', 'Business Credit Stacking'], risk: '+75%' },
+            'V1-EMAIL_AGE_MISMATCH': { category: 'Identity Fraud', description: 'Email age inconsistent with credit history. New email on old credit file.', method: 'Compare email creation date against credit file age.', ttps: ['Account Takeover', 'Synthetic Identity'], risk: '+40%' },
+            'V1-AUTO_GENERATED_EMAIL': { category: 'Identity Fraud', description: 'Email appears auto-generated (name + random numbers pattern).', method: 'Pattern matching on email structure.', ttps: ['Synthetic Identity', 'Fake Account'], risk: '+38%' },
+            
+            // DOJ Prosecution Patterns
+            'DOJ-003_CPN_INDICATORS': { category: 'DOJ Pattern', description: 'CPN (Credit Privacy Number) indicators detected. Based on federal prosecution patterns.', method: 'SSN range analysis against known CPN issuance patterns from DOJ cases.', ttps: ['CPN Fraud', 'Credit Repair Scam', 'Synthetic Identity'], risk: '+90%' },
+            'DOJ-001_POLLINATED_IDENTITY': { category: 'DOJ Pattern', description: 'Pollinated synthetic identity pattern. Real person\'s data mixed with fabricated elements.', method: 'Cross-reference identity elements for inconsistencies.', ttps: ['Pollinated Synthetic', 'Identity Mixing'], risk: '+85%' },
+            'DOJ-002_FICTITIOUS_REPORT': { category: 'DOJ Pattern', description: 'Fictitious police report pattern. Fake reports used to dispute legitimate debt.', method: 'Pattern recognition from DOJ prosecution cases.', ttps: ['Fictitious Report', 'Dispute Fraud'], risk: '+90%' },
+            
+            // Fintech Patterns  
+            'FT-001': { category: 'Device Fraud', description: 'VPN/Proxy detected via fintech signals.', method: 'Network analysis and proxy detection.', ttps: ['Location Spoofing', 'Fraud Concealment'], risk: '+70%' },
+            'FT-002': { category: 'Device Fraud', description: 'Emulator detected via fintech signals.', method: 'Device fingerprinting.', ttps: ['Fraud Farm', 'Device Spoofing'], risk: '+85%' },
+            
+            // Specialized Detectors
+            'IDENTITY_SEEDING': { category: 'Synthetic Identity', description: 'Identity seeding pattern detected. SSN being planted across multiple low-value accounts.', method: 'Track SSN velocity across data aggregators and rewards programs.', ttps: ['Identity Seeding', 'CPN Propagation', 'Synthetic Building'], risk: '+80%' },
+            'RENT_REPORTER_FRAUD': { category: 'Synthetic Identity', description: 'Fraudulent rent reporting detected. Fake rental history to boost credit.', method: 'Cross-reference rent reporter data against address history.', ttps: ['Rent Reporter Fraud', 'Credit Boosting', 'Synthetic Identity'], risk: '+75%' },
+            
+            // Legacy patterns (backward compatibility)
             'ITIN_AS_SSN': { category: 'Identity Fraud', description: 'SSN begins with 9XX (ITIN range). ITINs are for non-citizens and cannot be used for credit.', method: 'Validate first 3 digits against SSA rules. 9XX = ITIN, not SSN.', ttps: ['CPN Fraud', 'Synthetic Identity'], risk: '+45%' },
             'EIN_AS_SSN': { category: 'Identity Fraud', description: 'SSN falls within EIN prefix range (80-95).', method: 'Cross-reference against known EIN ranges.', ttps: ['EIN Abuse', 'Synthetic Identity'], risk: '+40%' },
             'NEOBANK_TIER1': { category: 'Banking Risk', description: 'High-risk neobank (Chime, Cash App, Varo). Minimal KYC.', method: 'Routing number matched against neobank database.', ttps: ['Neobank Exploitation', 'KYC Bypass'], risk: '+40%' },
@@ -2482,7 +2513,6 @@
             'HIGH_VELOCITY_24H': { category: 'Velocity Abuse', description: 'Multiple applications in 24 hours.', method: 'Application velocity tracking.', ttps: ['Loan Stacking', 'Bust Out'], risk: '+35%' },
             'AU_TRADELINE_STUFFING': { category: 'Credit Fraud', description: 'Excessive authorized user accounts.', method: 'AU account count analysis.', ttps: ['Tradeline Renting', 'AU Fraud'], risk: '+40%' }
         };
-
         function showPatternModal(code) {
             const info = patternInfo[code];
             if (!info) return;
