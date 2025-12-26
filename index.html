@@ -2506,10 +2506,17 @@
             if (e.key === 'Escape') closePatternModal();
         });
 
-        function renderResult(data, name = null, fraudType = null) {
+  function renderResult(data, name = null, fraudType = null) {
             const resultDiv = document.getElementById('demo-result');
-            const isApprove = data.decision === 'APPROVE';
-            const decisionClass = isApprove ? 'approve' : (data.decision === 'MANUAL_REVIEW' ? 'review' : 'deny');
+            // Handle both v1 and v2 API response formats
+            const riskScore = data.risk_assessment?.combined_score ?? data.risk_score ?? 0;
+            const decision = data.risk_assessment?.recommendation ?? data.decision ?? 'UNKNOWN';
+            const autoDeny = data.risk_assessment?.auto_deny ?? data.auto_deny ?? false;
+            const patterns = data.patterns?.pattern_ids ?? (Array.isArray(data.patterns) ? data.patterns : []);
+            const responseTime = data.response_time_ms ?? 0;
+            
+            const isApprove = decision === 'APPROVE';
+            const decisionClass = isApprove ? 'approve' : (decision === 'REVIEW' || decision === 'MANUAL_REVIEW' ? 'review' : 'deny');
             const scoreColor = isApprove ? 'var(--neon-green)' : 'var(--neon-red)';
             const headerExtra = name ? `<div style="margin-bottom: 8px; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-secondary);">${name} <span style="color: ${fraudType === 'LEGITIMATE' ? 'var(--neon-green)' : 'var(--neon-orange)'};">(${fraudType})</span></div>` : '';
 
@@ -2517,25 +2524,27 @@
                 <div class="result-header">
                     <div>
                         ${headerExtra}
-                        <div class="result-decision ${decisionClass}">${data.decision}</div>
-                        ${data.auto_deny ? `<div style="margin-top: 8px; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--neon-red);">AUTO-DENY: ${data.auto_deny_reason}</div>` : ''}
+                        <div class="result-decision ${decisionClass}">${decision}</div>
+                        ${autoDeny ? `<div style="margin-top: 8px; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--neon-red);">AUTO-DENY TRIGGERED</div>` : ''}
                     </div>
                     <div class="result-score">
                         <div class="result-score-label">Risk Score</div>
-                        <div class="result-score-value" style="color: ${scoreColor}">${(data.risk_score * 100).toFixed(1)}%</div>
+                        <div class="result-score-value" style="color: ${scoreColor}">${(riskScore * 100).toFixed(1)}%</div>
                     </div>
                 </div>
-                ${data.patterns && data.patterns.length > 0 ? `
+                ${patterns && patterns.length > 0 ? `
                     <div style="margin-bottom: 16px; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--neon-red); letter-spacing: 1px;">
-                        THREAT VECTORS DETECTED (${data.patterns.length})
+                        THREAT VECTORS DETECTED (${patterns.length})
                     </div>
                     <div class="result-patterns">
-                        ${data.patterns.map(p => `
-                            <div class="pattern-item" onclick="showPatternModal('${p.code || p}')">
+                        ${patterns.map(p => {
+                            const code = typeof p === 'string' ? p : (p.code || p.pattern_id || 'UNKNOWN');
+                            return `
+                            <div class="pattern-item" onclick="showPatternModal('${code}')">
                                 <span class="pattern-icon"><svg class="icon" style="width: 16px; height: 16px;"><use href="#icon-alert"/></svg></span>
-                                <span>${p.code || p}</span>
+                                <span>${code}</span>
                             </div>
-                        `).join('')}
+                        `}).join('')}
                     </div>
                 ` : `
                     <div style="text-align: center; padding: 40px; color: var(--neon-green);">
@@ -2544,7 +2553,7 @@
                     </div>
                 `}
                 <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center;">
-                    <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--text-muted);">Response time: ${data.response_time_ms}ms</div>
+                    <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--text-muted);">Response time: ${responseTime}ms</div>
                     <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--neon-green);">FraudGod v3 Hybrid Engine</div>
                 </div>
             `;
