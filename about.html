@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - NEUREON</title>
+    <meta name="description" content="Neureon Group builds fraud detection that thinks like fraudsters. Learn about our adversarial approach to stopping synthetic identity fraud.">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;800&family=JetBrains+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-primary: #0a0a0b;
+            --bg-secondary: #111113;
+            --bg-elevated: #18181b;
+            --bg-hover: #1f1f23;
+            
+            --border-subtle: rgba(255, 255, 255, 0.06);
+            --border-default: rgba(255, 255, 255, 0.1);
+            --border-emphasis: rgba(255, 255, 255, 0.15);
+            
+            --text-primary: #fafafa;
+            --text-secondary: #a1a1aa;
+            --text-muted: #52525b;
+            
+            --accent-green: #22c55e;
+            --accent-green-muted: rgba(34, 197, 94, 0.15);
+            --accent-yellow: #eab308;
+            --accent-yellow-muted: rgba(234, 179, 8, 0.15);
+            --accent-red: #ef4444;
+            --accent-red-muted: rgba(239, 68, 68, 0.15);
+            --accent-blue: #3b82f6;
+            --accent-blue-muted: rgba(59, 130, 246, 0.15);
+            
+            --brand-primary: #00ff41;
+            --brand-glow: rgba(0, 255, 65, 0.2);
+            
+            --font-display: 'Orbitron', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --font-body: 'IBM Plex Sans', -apple-system, sans-serif;
+            
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 15px;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Navigation */
+        .nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(10, 10, 11, 0.9);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 16px 0;
+        }
+
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--brand-primary);
+            text-decoration: none;
+            letter-spacing: 3px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-link.active {
+            color: var(--brand-primary);
+        }
+
+        .nav-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--accent-green);
+            padding: 6px 12px;
+            background: var(--accent-green-muted);
+            border-radius: var(--radius-sm);
+        }
+
+        .nav-status-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--accent-green);
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Hero */
+        .hero {
+            padding: 100px 0 80px;
+            text-align: center;
+        }
+
+        .hero-label {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--brand-primary);
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+
+        .hero-title {
+            font-family: var(--font-display);
+            font-size: 2.8rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            line-height: 1.2;
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 600px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+        }
+
+        .hero-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            max-width: 650px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        /* Mission Section */
+        .mission-section {
+            padding: 60px 0;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .section-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 60px;
+            align-items: start;
+        }
+
+        @media (max-width: 768px) {
+            .section-grid {
+                grid-template-columns: 1fr;
+                gap: 32px;
+            }
+        }
+
+        .section-label {
+            font-family: var(--font-display);
+            font-size: 0.9rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+            position: sticky;
+            top: 100px;
+        }
+
+        .section-content h3 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .section-content p {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .section-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Stats Grid */
+        .stats-section {
+            padding: 60px 0;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .stat-card {
+            padding: 32px 24px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--brand-primary);
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* Approach Section */
+        .approach-section {
+            padding: 60px 0;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .approach-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-top: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .approach-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .approach-card {
+            padding: 32px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+        }
+
+        .approach-icon {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--brand-glow);
+            border-radius: var(--radius-sm);
+            margin-bottom: 20px;
+        }
+
+        .approach-icon svg {
+            width: 24px;
+            height: 24px;
+            color: var(--brand-primary);
+        }
+
+        .approach-card h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .approach-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        /* Quote Section */
+        .quote-section {
+            padding: 80px 0;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .quote-block {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .quote-text {
+            font-size: 1.6rem;
+            font-weight: 500;
+            line-height: 1.6;
+            margin-bottom: 24px;
+            color: var(--text-primary);
+        }
+
+        .quote-text::before {
+            content: '"';
+            color: var(--brand-primary);
+        }
+
+        .quote-text::after {
+            content: '"';
+            color: var(--brand-primary);
+        }
+
+        .quote-attribution {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* Technology Section */
+        .tech-section {
+            padding: 60px 0;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .tech-list {
+            margin-top: 32px;
+        }
+
+        .tech-item {
+            display: flex;
+            gap: 20px;
+            padding: 24px 0;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .tech-item:last-child {
+            border-bottom: none;
+        }
+
+        .tech-number {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--brand-primary);
+            min-width: 32px;
+        }
+
+        .tech-content h4 {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .tech-content p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 80px 0;
+            border-top: 1px solid var(--border-subtle);
+            text-align: center;
+        }
+
+        .cta-title {
+            font-family: var(--font-display);
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-bottom: 16px;
+        }
+
+        .cta-text {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 32px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 28px;
+            border-radius: var(--radius-sm);
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--brand-primary);
+            color: var(--bg-primary);
+        }
+
+        .btn-primary:hover {
+            filter: brightness(1.1);
+            box-shadow: 0 0 24px var(--brand-glow);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--border-default);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--border-emphasis);
+            background: var(--bg-elevated);
+        }
+
+        /* Footer */
+        footer {
+            padding: 32px 0;
+            border-top: 1px solid var(--border-subtle);
+            background: var(--bg-secondary);
+        }
+
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .footer-copy {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 24px;
+        }
+
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="/" class="nav-brand">NEUREON</a>
+            <div class="nav-links">
+                <a href="/" class="nav-link">Home</a>
+                <a href="/scanner.html" class="nav-link">Scanner</a>
+                <a href="/dashboard.html" class="nav-link">Dashboard</a>
+                <a href="/pricing.html" class="nav-link">Pricing</a>
+                <a href="/about.html" class="nav-link active">About</a>
+                <div class="nav-status">
+                    <div class="nav-status-dot"></div>
+                    <span>API ONLINE</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <header class="hero">
+        <div class="container">
+            <div class="hero-label">NEUREON GROUP LLC</div>
+            <h1 class="hero-title">WE THINK LIKE FRAUDSTERS<br>SO YOU DON'T HAVE TO</h1>
+            <p class="hero-subtitle">
+                Synthetic identity fraud costs financial institutions $6 billion annually. 
+                Traditional detection misses it because it doesn't understand how synthetics are built. We do.
+            </p>
+        </div>
+    </header>
+
+    <!-- Mission Section -->
+    <section class="mission-section">
+        <div class="container">
+            <div class="section-grid">
+                <div class="section-label">THE PROBLEM</div>
+                <div class="section-content">
+                    <h3>Banks are fighting yesterday's war</h3>
+                    <p>
+                        Synthetic identity fraud isn't identity theft—it's identity creation. Fraudsters combine 
+                        real SSNs (often from children, elderly, or immigrants) with fabricated information to 
+                        build entirely new "people" that pass traditional verification.
+                    </p>
+                    <p>
+                        These synthetics are designed from the ground up to beat rule-based detection. They 
+                        warm accounts for months, build legitimate-looking credit histories through authorized 
+                        user tradelines, and exploit the gaps between how fraud ops thinks and how attackers operate.
+                    </p>
+                    <p>
+                        By the time a synthetic busts out, they've extracted maximum credit across multiple 
+                        institutions. The average loss per synthetic is $15,000. And your existing fraud 
+                        stack probably can't see them coming.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">$6B</div>
+                    <div class="stat-label">Annual industry losses</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">85%</div>
+                    <div class="stat-label">Missed by traditional systems</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">18mo</div>
+                    <div class="stat-label">Average synthetic lifespan</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">$15K</div>
+                    <div class="stat-label">Average loss per synthetic</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Approach Section -->
+    <section class="approach-section">
+        <div class="container">
+            <div class="section-grid">
+                <div class="section-label">OUR APPROACH</div>
+                <div class="section-content">
+                    <h3>Adversarial intelligence meets fraud detection</h3>
+                    <p>
+                        We built FraudGod by studying how synthetics are actually created—not from academic 
+                        papers, but from DOJ prosecution cases, dark web tutorials, and real fraud operations. 
+                        We know the playbook because we've reverse-engineered it.
+                    </p>
+                </div>
+            </div>
+            <div class="approach-grid">
+                <div class="approach-card">
+                    <div class="approach-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                            <path d="M2 17l10 5 10-5"/>
+                            <path d="M2 12l10 5 10-5"/>
+                        </svg>
+                    </div>
+                    <h4>DOJ Pattern Mining</h4>
+                    <p>
+                        We extract detection patterns from federal prosecutions—real fraud schemes that 
+                        worked until they didn't. CPN sales, tradeline renting, pollinated identities—if 
+                        the DOJ prosecuted it, we detect it.
+                    </p>
+                </div>
+                <div class="approach-card">
+                    <div class="approach-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M12 6v6l4 2"/>
+                        </svg>
+                    </div>
+                    <h4>Temporal Analysis</h4>
+                    <p>
+                        Synthetics follow predictable timelines—31-day account warming, credit velocity 
+                        that's impossible for real humans, application patterns that reveal coordination. 
+                        We track the clock.
+                    </p>
+                </div>
+                <div class="approach-card">
+                    <div class="approach-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>
+                            <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+                            <line x1="12" y1="22.08" x2="12" y2="12"/>
+                        </svg>
+                    </div>
+                    <h4>Hybrid Detection</h4>
+                    <p>
+                        60% rule-based patterns for hard fraud indicators, 40% ML for behavioral anomalies. 
+                        The rules catch what we know; the models catch what we don't. Together: 100% 
+                        accuracy on test suites.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quote Section -->
+    <section class="quote-section">
+        <div class="container">
+            <div class="quote-block">
+                <p class="quote-text">
+                    The best defense is built by people who understand offense. 
+                    You can't stop what you can't see—and most fraud teams have never seen how synthetics are actually built.
+                </p>
+                <p class="quote-attribution">— Neureon Group founding principle</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technology Section -->
+    <section class="tech-section">
+        <div class="container">
+            <div class="section-grid">
+                <div class="section-label">DETECTION ENGINE</div>
+                <div class="section-content">
+                    <h3>What FraudGod catches</h3>
+                    <div class="tech-list">
+                        <div class="tech-item">
+                            <span class="tech-number">01</span>
+                            <div class="tech-content">
+                                <h4>CPN/ITIN Fraud</h4>
+                                <p>SSNs in the 900 series, 666 prefix, EIN ranges (80-95), and other invalid area codes that indicate Credit Privacy Numbers being used as SSNs.</p>
+                            </div>
+                        </div>
+                        <div class="tech-item">
+                            <span class="tech-number">02</span>
+                            <div class="tech-content">
+                                <h4>Tradeline Manipulation</h4>
+                                <p>Authorized user stuffing (6+ AU accounts), impossible credit velocity (high score + thin file), and piggybacking patterns from tradeline mills.</p>
+                            </div>
+                        </div>
+                        <div class="tech-item">
+                            <span class="tech-number">03</span>
+                            <div class="tech-content">
+                                <h4>Identity Seeding</h4>
+                                <p>Detection of identities being "warmed" across data aggregators, rewards programs, and utility accounts to establish false legitimacy.</p>
+                            </div>
+                        </div>
+                        <div class="tech-item">
+                            <span class="tech-number">04</span>
+                            <div class="tech-content">
+                                <h4>Application Velocity</h4>
+                                <p>Coordinated application patterns across institutions, device fingerprint anomalies, VPN/datacenter IPs, and emulator detection for fraud farms.</p>
+                            </div>
+                        </div>
+                        <div class="tech-item">
+                            <span class="tech-number">05</span>
+                            <div class="tech-content">
+                                <h4>Bust-Out Indicators</h4>
+                                <p>Pre-bust-out behavioral patterns including rapid balance increases, cash advance spikes, and account activity that precedes charge-off.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2 class="cta-title">READY TO SEE WHAT YOU'RE MISSING?</h2>
+            <p class="cta-text">
+                Run your portfolio through FraudGod. Find the synthetics hiding in your member base.
+            </p>
+            <div class="cta-buttons">
+                <a href="/scanner.html" class="btn btn-primary">Try Portfolio Scanner</a>
+                <a href="mailto:hq@neureon.group" class="btn btn-secondary">Contact Us</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-content">
+                <div class="footer-copy">© 2024 Neureon Group LLC. All rights reserved.</div>
+                <div class="footer-links">
+                    <a href="mailto:hq@neureon.group">hq@neureon.group</a>
+                    <a href="/pricing.html">Pricing</a>
+                    <a href="/sms-consent.html">SMS Consent</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
