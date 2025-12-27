@@ -1,0 +1,1808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Scanner - NEUREON</title>
+    <meta name="description" content="Scan your existing member portfolio for synthetic identities. Upload CSV, get instant fraud risk assessment.">
+    <meta name="robots" content="noindex, nofollow">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;800&family=JetBrains+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-primary: #0a0a0b;
+            --bg-secondary: #111113;
+            --bg-elevated: #18181b;
+            --bg-hover: #1f1f23;
+            
+            --border-subtle: rgba(255, 255, 255, 0.06);
+            --border-default: rgba(255, 255, 255, 0.1);
+            --border-emphasis: rgba(255, 255, 255, 0.15);
+            
+            --text-primary: #fafafa;
+            --text-secondary: #a1a1aa;
+            --text-muted: #52525b;
+            
+            --accent-green: #22c55e;
+            --accent-green-muted: rgba(34, 197, 94, 0.15);
+            --accent-yellow: #eab308;
+            --accent-yellow-muted: rgba(234, 179, 8, 0.15);
+            --accent-red: #ef4444;
+            --accent-red-muted: rgba(239, 68, 68, 0.15);
+            --accent-blue: #3b82f6;
+            --accent-blue-muted: rgba(59, 130, 246, 0.15);
+            
+            --brand-primary: #00ff41;
+            --brand-glow: rgba(0, 255, 65, 0.2);
+            
+            --font-display: 'Orbitron', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --font-body: 'IBM Plex Sans', -apple-system, sans-serif;
+            
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 15px;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* ========== LAYOUT ========== */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ========== NAVIGATION ========== */
+        .nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(10, 10, 11, 0.9);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 16px 0;
+        }
+
+        .nav-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--brand-primary);
+            text-decoration: none;
+            letter-spacing: 3px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-link.active {
+            color: var(--brand-primary);
+        }
+
+        .nav-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--accent-green);
+            padding: 6px 12px;
+            background: var(--accent-green-muted);
+            border-radius: var(--radius-sm);
+        }
+
+        .nav-status-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--accent-green);
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* ========== PAGE HEADER ========== */
+        .page-header {
+            padding: 64px 0 48px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .page-title {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+        }
+
+        .page-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 600px;
+        }
+
+        /* ========== SECURITY NOTICE ========== */
+        .security-notice {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            padding: 20px 24px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-md);
+            margin: 32px 0;
+        }
+
+        .security-icon {
+            flex-shrink: 0;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--accent-green-muted);
+            border-radius: var(--radius-sm);
+            color: var(--accent-green);
+        }
+
+        .security-icon svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .security-content h3 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .security-content p {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            line-height: 1.7;
+        }
+
+        .security-badges {
+            display: flex;
+            gap: 16px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .security-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .security-badge svg {
+            width: 14px;
+            height: 14px;
+            color: var(--accent-green);
+        }
+
+        /* ========== UPLOAD ZONE ========== */
+        .upload-section {
+            padding: 48px 0;
+        }
+
+        .upload-zone {
+            position: relative;
+            border: 2px dashed var(--border-default);
+            border-radius: var(--radius-lg);
+            padding: 64px 32px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: var(--bg-secondary);
+        }
+
+        .upload-zone:hover {
+            border-color: var(--border-emphasis);
+            background: var(--bg-elevated);
+        }
+
+        .upload-zone.dragover {
+            border-color: var(--brand-primary);
+            background: var(--brand-glow);
+        }
+
+        .upload-zone.has-file {
+            border-style: solid;
+            border-color: var(--accent-green);
+        }
+
+        .upload-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 24px;
+            color: var(--text-muted);
+            transition: color 0.2s;
+        }
+
+        .upload-zone:hover .upload-icon {
+            color: var(--text-secondary);
+        }
+
+        .upload-zone.dragover .upload-icon {
+            color: var(--brand-primary);
+        }
+
+        .upload-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .upload-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 24px;
+        }
+
+        .upload-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .upload-button:hover {
+            background: var(--bg-hover);
+            border-color: var(--border-emphasis);
+        }
+
+        .upload-button svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .upload-input {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            cursor: pointer;
+        }
+
+        .upload-formats {
+            margin-top: 24px;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* ========== FILE INFO ========== */
+        .file-info {
+            display: none;
+            margin-top: 32px;
+            padding: 24px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-md);
+        }
+
+        .file-info.visible {
+            display: block;
+        }
+
+        .file-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .file-details {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .file-icon {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--accent-blue-muted);
+            border-radius: var(--radius-sm);
+            color: var(--accent-blue);
+        }
+
+        .file-icon svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .file-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .file-meta {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .file-remove {
+            padding: 8px 16px;
+            background: transparent;
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .file-remove:hover {
+            border-color: var(--accent-red);
+            color: var(--accent-red);
+        }
+
+        .column-mapping {
+            padding-top: 20px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .column-mapping h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .column-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .column-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 14px;
+            background: var(--bg-elevated);
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+        }
+
+        .column-label {
+            color: var(--text-secondary);
+        }
+
+        .column-value {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--accent-green);
+        }
+
+        .column-missing {
+            color: var(--accent-yellow);
+        }
+
+        /* ========== SCAN BUTTON ========== */
+        .scan-actions {
+            display: none;
+            margin-top: 24px;
+        }
+
+        .scan-actions.visible {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 28px;
+            border-radius: var(--radius-sm);
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--brand-primary);
+            color: var(--bg-primary);
+        }
+
+        .btn-primary:hover {
+            filter: brightness(1.1);
+            box-shadow: 0 0 24px var(--brand-glow);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            filter: none;
+            box-shadow: none;
+        }
+
+        .btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* ========== PROGRESS ========== */
+        .progress-section {
+            display: none;
+            padding: 48px 0;
+        }
+
+        .progress-section.visible {
+            display: block;
+        }
+
+        .progress-card {
+            padding: 32px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-md);
+            text-align: center;
+        }
+
+        .progress-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .progress-bar-container {
+            height: 8px;
+            background: var(--bg-elevated);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--brand-primary), var(--accent-blue));
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.3s ease-out;
+        }
+
+        .progress-stats {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* ========== RESULTS ========== */
+        .results-section {
+            display: none;
+            padding: 48px 0 96px;
+        }
+
+        .results-section.visible {
+            display: block;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+            gap: 24px;
+        }
+
+        .results-title {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .results-meta {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .results-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-secondary {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-default);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-hover);
+            border-color: var(--border-emphasis);
+        }
+
+        /* ========== SUMMARY CARDS ========== */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        @media (max-width: 900px) {
+            .summary-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .summary-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .summary-card {
+            padding: 20px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .summary-card:hover {
+            border-color: var(--border-default);
+        }
+
+        .summary-card.active {
+            border-color: var(--brand-primary);
+            background: var(--brand-glow);
+        }
+
+        .summary-card.critical {
+            border-left: 3px solid var(--accent-red);
+        }
+
+        .summary-card.warning {
+            border-left: 3px solid var(--accent-yellow);
+        }
+
+        .summary-card.safe {
+            border-left: 3px solid var(--accent-green);
+        }
+
+        .summary-value {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .summary-card.critical .summary-value {
+            color: var(--accent-red);
+        }
+
+        .summary-card.warning .summary-value {
+            color: var(--accent-yellow);
+        }
+
+        .summary-card.safe .summary-value {
+            color: var(--accent-green);
+        }
+
+        .summary-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* ========== RESULTS TABLE ========== */
+        .table-container {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+        }
+
+        .table-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-subtle);
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .table-search {
+            flex: 1;
+            max-width: 300px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-sm);
+        }
+
+        .table-search svg {
+            width: 16px;
+            height: 16px;
+            color: var(--text-muted);
+        }
+
+        .table-search input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .table-search input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .table-filters {
+            display: flex;
+            gap: 8px;
+        }
+
+        .filter-btn {
+            padding: 6px 12px;
+            background: transparent;
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--border-default);
+            color: var(--text-secondary);
+        }
+
+        .filter-btn.active {
+            border-color: var(--brand-primary);
+            color: var(--brand-primary);
+            background: var(--brand-glow);
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        thead {
+            background: var(--bg-elevated);
+        }
+
+        th {
+            padding: 14px 16px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            cursor: pointer;
+            user-select: none;
+            transition: color 0.2s;
+        }
+
+        th:hover {
+            color: var(--text-secondary);
+        }
+
+        th.sorted {
+            color: var(--brand-primary);
+        }
+
+        th .sort-icon {
+            display: inline-block;
+            margin-left: 4px;
+            opacity: 0.5;
+        }
+
+        th.sorted .sort-icon {
+            opacity: 1;
+        }
+
+        tbody tr {
+            border-top: 1px solid var(--border-subtle);
+            transition: background 0.15s;
+        }
+
+        tbody tr:hover {
+            background: var(--bg-elevated);
+        }
+
+        td {
+            padding: 14px 16px;
+            vertical-align: middle;
+        }
+
+        .cell-id {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .cell-ssn {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+        }
+
+        .cell-score {
+            font-family: var(--font-mono);
+            font-weight: 600;
+        }
+
+        .cell-score.high {
+            color: var(--accent-red);
+        }
+
+        .cell-score.medium {
+            color: var(--accent-yellow);
+        }
+
+        .cell-score.low {
+            color: var(--accent-green);
+        }
+
+        .cell-decision {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: var(--radius-sm);
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .cell-decision.deny {
+            background: var(--accent-red-muted);
+            color: var(--accent-red);
+        }
+
+        .cell-decision.review {
+            background: var(--accent-yellow-muted);
+            color: var(--accent-yellow);
+        }
+
+        .cell-decision.approve {
+            background: var(--accent-green-muted);
+            color: var(--accent-green);
+        }
+
+        .cell-patterns {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            max-width: 300px;
+        }
+
+        .pattern-tag {
+            padding: 2px 8px;
+            background: var(--bg-elevated);
+            border-radius: 3px;
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+
+        .pattern-tag.critical {
+            background: var(--accent-red-muted);
+            color: var(--accent-red);
+        }
+
+        .cell-probability {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+        }
+
+        /* ========== PAGINATION ========== */
+        .table-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .table-info {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .pagination {
+            display: flex;
+            gap: 4px;
+        }
+
+        .page-btn {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .page-btn:hover:not(:disabled) {
+            border-color: var(--border-default);
+            background: var(--bg-elevated);
+        }
+
+        .page-btn.active {
+            border-color: var(--brand-primary);
+            color: var(--brand-primary);
+            background: var(--brand-glow);
+        }
+
+        .page-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        /* ========== FOOTER ========== */
+        footer {
+            padding: 32px 0;
+            border-top: 1px solid var(--border-subtle);
+            background: var(--bg-secondary);
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .footer-copy {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 24px;
+        }
+
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: var(--text-secondary);
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 768px) {
+            .page-header {
+                padding: 40px 0 32px;
+            }
+
+            .page-title {
+                font-size: 1.5rem;
+            }
+
+            .security-notice {
+                flex-direction: column;
+            }
+
+            .upload-zone {
+                padding: 40px 20px;
+            }
+
+            .file-header {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .results-header {
+                flex-direction: column;
+            }
+
+            .results-actions {
+                width: 100%;
+            }
+
+            .results-actions .btn {
+                flex: 1;
+                justify-content: center;
+            }
+
+            .table-toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .table-search {
+                max-width: none;
+            }
+
+            .table-filters {
+                overflow-x: auto;
+                padding-bottom: 4px;
+            }
+        }
+
+        /* ========== UTILITIES ========== */
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="container">
+            <div class="nav-inner">
+                <a href="/" class="nav-brand">NEUREON</a>
+                <div class="nav-links">
+                    <a href="/" class="nav-link">Home</a>
+                    <a href="/scanner.html" class="nav-link active">Scanner</a>
+                    <a href="mailto:hq@neureon.group" class="nav-link">Contact</a>
+                    <div class="nav-status">
+                        <div class="nav-status-dot"></div>
+                        <span>API ONLINE</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <header class="page-header">
+        <div class="container">
+            <h1 class="page-title">PORTFOLIO SCANNER</h1>
+            <p class="page-subtitle">
+                Upload your member data to identify synthetic identities hiding in your existing portfolio. 
+                Results in seconds, not weeks.
+            </p>
+        </div>
+    </header>
+
+    <!-- Security Notice -->
+    <div class="container">
+        <div class="security-notice">
+            <div class="security-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2l8 4v6c0 5.25-3.5 9.74-8 11-4.5-1.26-8-5.75-8-11V6l8-4z"/>
+                    <polyline points="9 12 11 14 15 10"/>
+                </svg>
+            </div>
+            <div class="security-content">
+                <h3>Your data stays secure</h3>
+                <p>
+                    Files are parsed locally in your browser. Only the minimum required fields are transmitted to our API 
+                    over encrypted connections. No data is stored after processing — results are computed in memory and returned immediately.
+                </p>
+                <div class="security-badges">
+                    <span class="security-badge">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2"/>
+                            <path d="M7 11V7a5 5 0 0110 0v4"/>
+                        </svg>
+                        TLS 1.3 Encrypted
+                    </span>
+                    <span class="security-badge">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="12" y1="8" x2="12" y2="12"/>
+                            <line x1="12" y1="16" x2="12.01" y2="16"/>
+                        </svg>
+                        No Data Retention
+                    </span>
+                    <span class="security-badge">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2a10 10 0 100 20 10 10 0 000-20z"/>
+                            <path d="M2 12h20"/>
+                            <path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/>
+                        </svg>
+                        SOC 2 Compliant Infrastructure
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upload Section -->
+    <section class="upload-section">
+        <div class="container">
+            <div class="upload-zone" id="upload-zone">
+                <input type="file" class="upload-input" id="file-input" accept=".csv">
+                <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                    <polyline points="17 8 12 3 7 8"/>
+                    <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+                <h3 class="upload-title">Drop your CSV file here</h3>
+                <p class="upload-subtitle">or click to browse</p>
+                <button type="button" class="upload-button" onclick="document.getElementById('file-input').click()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                    </svg>
+                    Select File
+                </button>
+                <p class="upload-formats">Accepted: CSV up to 10,000 rows. Required column: SSN</p>
+            </div>
+
+            <!-- File Info -->
+            <div class="file-info" id="file-info">
+                <div class="file-header">
+                    <div class="file-details">
+                        <div class="file-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="file-name" id="file-name">filename.csv</div>
+                            <div class="file-meta" id="file-meta">0 records · 0 KB</div>
+                        </div>
+                    </div>
+                    <button class="file-remove" onclick="removeFile()">Remove</button>
+                </div>
+                <div class="column-mapping">
+                    <h4>Detected Columns</h4>
+                    <div class="column-grid" id="column-grid"></div>
+                </div>
+            </div>
+
+            <!-- Scan Actions -->
+            <div class="scan-actions" id="scan-actions">
+                <button class="btn btn-primary" id="scan-button" onclick="startScan()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"/>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                    </svg>
+                    Scan Portfolio
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Progress Section -->
+    <section class="progress-section" id="progress-section">
+        <div class="container">
+            <div class="progress-card">
+                <h3 class="progress-title">Analyzing portfolio...</h3>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="progress-bar"></div>
+                </div>
+                <p class="progress-stats" id="progress-stats">Processing 0 of 0 records</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Results Section -->
+    <section class="results-section" id="results-section">
+        <div class="container">
+            <div class="results-header">
+                <div>
+                    <h2 class="results-title">SCAN RESULTS</h2>
+                    <p class="results-meta" id="results-meta">0 records analyzed in 0ms</p>
+                </div>
+                <div class="results-actions">
+                    <button class="btn btn-secondary" onclick="exportCSV()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        Export CSV
+                    </button>
+                    <button class="btn btn-primary" onclick="newScan()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="1 4 1 10 7 10"/>
+                            <path d="M3.51 15a9 9 0 102.13-9.36L1 10"/>
+                        </svg>
+                        New Scan
+                    </button>
+                </div>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="summary-grid" id="summary-grid">
+                <div class="summary-card critical" data-filter="deny" onclick="filterResults('deny')">
+                    <div class="summary-value" id="summary-deny">0</div>
+                    <div class="summary-label">High Risk</div>
+                </div>
+                <div class="summary-card warning" data-filter="review" onclick="filterResults('review')">
+                    <div class="summary-value" id="summary-review">0</div>
+                    <div class="summary-label">Needs Review</div>
+                </div>
+                <div class="summary-card warning" data-filter="stepup" onclick="filterResults('stepup')">
+                    <div class="summary-value" id="summary-stepup">0</div>
+                    <div class="summary-label">Step-Up</div>
+                </div>
+                <div class="summary-card safe" data-filter="approve" onclick="filterResults('approve')">
+                    <div class="summary-value" id="summary-approve">0</div>
+                    <div class="summary-label">Clean</div>
+                </div>
+                <div class="summary-card" data-filter="all" onclick="filterResults('all')">
+                    <div class="summary-value" id="summary-total">0</div>
+                    <div class="summary-label">Total</div>
+                </div>
+            </div>
+
+            <!-- Results Table -->
+            <div class="table-container">
+                <div class="table-toolbar">
+                    <div class="table-search">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"/>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                        </svg>
+                        <input type="text" placeholder="Search by ID or SSN..." id="search-input" oninput="searchResults()">
+                    </div>
+                    <div class="table-filters">
+                        <button class="filter-btn active" data-filter="all" onclick="filterResults('all')">All</button>
+                        <button class="filter-btn" data-filter="deny" onclick="filterResults('deny')">High Risk</button>
+                        <button class="filter-btn" data-filter="review" onclick="filterResults('review')">Review</button>
+                        <button class="filter-btn" data-filter="stepup" onclick="filterResults('stepup')">Step-Up</button>
+                        <button class="filter-btn" data-filter="approve" onclick="filterResults('approve')">Clean</button>
+                    </div>
+                </div>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th onclick="sortResults('id')">ID <span class="sort-icon">↕</span></th>
+                                <th onclick="sortResults('ssn')">SSN <span class="sort-icon">↕</span></th>
+                                <th onclick="sortResults('risk')" class="sorted">Risk Score <span class="sort-icon">↓</span></th>
+                                <th onclick="sortResults('decision')">Decision <span class="sort-icon">↕</span></th>
+                                <th>Patterns Detected</th>
+                                <th onclick="sortResults('synthetic')">Synthetic Prob. <span class="sort-icon">↕</span></th>
+                            </tr>
+                        </thead>
+                        <tbody id="results-table"></tbody>
+                    </table>
+                </div>
+                <div class="table-footer">
+                    <div class="table-info" id="table-info">Showing 0 of 0 results</div>
+                    <div class="pagination" id="pagination"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-copy">© 2024 Neureon Group LLC. All rights reserved.</div>
+                <div class="footer-links">
+                    <a href="mailto:hq@neureon.group">Contact</a>
+                    <a href="/sms-consent.html">SMS Consent</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // ========== CONFIGURATION ==========
+        const API_URL = 'https://api.neureon.group';
+        const API_KEY = 'neureon_prod_key_2024';
+        const BATCH_SIZE = 100; // Records per API call
+        const PAGE_SIZE = 25;
+
+        // ========== STATE ==========
+        let parsedData = null;
+        let scanResults = null;
+        let filteredResults = null;
+        let currentPage = 1;
+        let currentFilter = 'all';
+        let currentSort = { field: 'risk', direction: 'desc' };
+
+        // ========== COLUMN MAPPING ==========
+        const COLUMN_ALIASES = {
+            ssn: ['ssn', 'social', 'social_security', 'social_security_number', 'ssn_number', 'tin'],
+            credit_score: ['credit_score', 'creditscore', 'fico', 'score', 'credit'],
+            credit_file_months: ['credit_file_months', 'credit_age', 'file_age', 'credit_history_months'],
+            authorized_user_accounts: ['authorized_user_accounts', 'au_accounts', 'auth_user', 'piggybacking'],
+            phone_carrier: ['phone_carrier', 'carrier', 'mobile_carrier'],
+            address_history_count: ['address_history_count', 'address_count', 'addresses'],
+            account_age_days: ['account_age_days', 'account_age', 'days_since_open'],
+            id: ['id', 'member_id', 'customer_id', 'account_number', 'record_id']
+        };
+
+        function findColumn(headers, aliases) {
+            const normalized = headers.map(h => h.toLowerCase().replace(/[^a-z0-9]/g, '_'));
+            for (const alias of aliases) {
+                const idx = normalized.indexOf(alias.toLowerCase().replace(/[^a-z0-9]/g, '_'));
+                if (idx !== -1) return headers[idx];
+            }
+            return null;
+        }
+
+        // ========== FILE HANDLING ==========
+        const uploadZone = document.getElementById('upload-zone');
+        const fileInput = document.getElementById('file-input');
+
+        uploadZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadZone.classList.add('dragover');
+        });
+
+        uploadZone.addEventListener('dragleave', () => {
+            uploadZone.classList.remove('dragover');
+        });
+
+        uploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadZone.classList.remove('dragover');
+            const file = e.dataTransfer.files[0];
+            if (file) handleFile(file);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) handleFile(file);
+        });
+
+        function handleFile(file) {
+            if (!file.name.endsWith('.csv')) {
+                alert('Please upload a CSV file.');
+                return;
+            }
+
+            if (file.size > 50 * 1024 * 1024) {
+                alert('File size must be under 50MB.');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const content = e.target.result;
+                    parseCSV(content, file.name, file.size);
+                } catch (err) {
+                    alert('Error parsing CSV: ' + err.message);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function parseCSV(content, fileName, fileSize) {
+            const lines = content.split(/\r?\n/).filter(line => line.trim());
+            if (lines.length < 2) {
+                alert('CSV must have at least a header row and one data row.');
+                return;
+            }
+
+            // Parse header
+            const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
+            
+            // Find column mappings
+            const columnMap = {};
+            for (const [field, aliases] of Object.entries(COLUMN_ALIASES)) {
+                columnMap[field] = findColumn(headers, aliases);
+            }
+
+            if (!columnMap.ssn) {
+                alert('CSV must contain an SSN column.');
+                return;
+            }
+
+            // Parse data rows
+            const records = [];
+            for (let i = 1; i < lines.length && i <= 10000; i++) {
+                const values = parseCSVLine(lines[i]);
+                if (values.length !== headers.length) continue;
+
+                const record = {};
+                for (const [field, header] of Object.entries(columnMap)) {
+                    if (header) {
+                        const idx = headers.indexOf(header);
+                        if (idx !== -1) {
+                            let val = values[idx];
+                            // Type conversion
+                            if (['credit_score', 'credit_file_months', 'authorized_user_accounts', 'address_history_count', 'account_age_days'].includes(field)) {
+                                val = parseInt(val) || null;
+                            }
+                            record[field] = val;
+                        }
+                    }
+                }
+                
+                // Generate ID if not present
+                if (!record.id) record.id = `record_${i}`;
+                
+                if (record.ssn) records.push(record);
+            }
+
+            if (records.length === 0) {
+                alert('No valid records found in CSV.');
+                return;
+            }
+
+            parsedData = { headers, columnMap, records };
+
+            // Update UI
+            document.getElementById('file-name').textContent = fileName;
+            document.getElementById('file-meta').textContent = `${records.length.toLocaleString()} records · ${formatBytes(fileSize)}`;
+
+            // Show column mapping
+            const columnGrid = document.getElementById('column-grid');
+            columnGrid.innerHTML = Object.entries(columnMap).map(([field, header]) => `
+                <div class="column-item">
+                    <span class="column-label">${field.replace(/_/g, ' ')}</span>
+                    <span class="column-value ${header ? '' : 'column-missing'}">${header || 'Not found'}</span>
+                </div>
+            `).join('');
+
+            uploadZone.classList.add('has-file');
+            document.getElementById('file-info').classList.add('visible');
+            document.getElementById('scan-actions').classList.add('visible');
+        }
+
+        function parseCSVLine(line) {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+            
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+                if (char === '"') {
+                    inQuotes = !inQuotes;
+                } else if (char === ',' && !inQuotes) {
+                    result.push(current.trim());
+                    current = '';
+                } else {
+                    current += char;
+                }
+            }
+            result.push(current.trim());
+            return result;
+        }
+
+        function removeFile() {
+            parsedData = null;
+            fileInput.value = '';
+            uploadZone.classList.remove('has-file');
+            document.getElementById('file-info').classList.remove('visible');
+            document.getElementById('scan-actions').classList.remove('visible');
+        }
+
+        function formatBytes(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+        }
+
+        // ========== SCANNING ==========
+        async function startScan() {
+            if (!parsedData || parsedData.records.length === 0) return;
+
+            const records = parsedData.records;
+            const totalRecords = records.length;
+            const batches = [];
+
+            // Split into batches
+            for (let i = 0; i < totalRecords; i += BATCH_SIZE) {
+                batches.push(records.slice(i, i + BATCH_SIZE));
+            }
+
+            // Show progress
+            document.getElementById('scan-actions').classList.remove('visible');
+            document.getElementById('progress-section').classList.add('visible');
+
+            const progressBar = document.getElementById('progress-bar');
+            const progressStats = document.getElementById('progress-stats');
+
+            let processed = 0;
+            const allResults = [];
+            const startTime = Date.now();
+
+            for (let i = 0; i < batches.length; i++) {
+                try {
+                    const response = await fetch(`${API_URL}/api/v2/batch`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-API-Key': API_KEY
+                        },
+                        body: JSON.stringify({
+                            records: batches[i],
+                            include_patterns: true
+                        })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`API error: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    allResults.push(...data.results);
+
+                    processed += batches[i].length;
+                    const percent = Math.round((processed / totalRecords) * 100);
+                    progressBar.style.width = percent + '%';
+                    progressStats.textContent = `Processing ${processed.toLocaleString()} of ${totalRecords.toLocaleString()} records`;
+
+                } catch (err) {
+                    console.error('Batch error:', err);
+                    // Add error results for this batch
+                    batches[i].forEach(record => {
+                        allResults.push({
+                            id: record.id,
+                            ssn_masked: '***-**-****',
+                            risk_score: 0,
+                            decision: 'ERROR',
+                            pattern_count: 0,
+                            patterns: null,
+                            auto_deny: false,
+                            synthetic_probability: 0
+                        });
+                    });
+                    processed += batches[i].length;
+                }
+            }
+
+            const totalTime = Date.now() - startTime;
+
+            // Store results
+            scanResults = {
+                results: allResults,
+                totalRecords,
+                processingTime: totalTime,
+                summary: {
+                    deny: allResults.filter(r => r.decision === 'AUTO-DENY' || r.decision === 'DENY').length,
+                    review: allResults.filter(r => r.decision === 'REVIEW').length,
+                    stepup: allResults.filter(r => r.decision === 'STEP-UP').length,
+                    approve: allResults.filter(r => r.decision === 'APPROVE').length,
+                    error: allResults.filter(r => r.decision === 'ERROR').length
+                }
+            };
+
+            // Show results
+            showResults();
+        }
+
+        // ========== RESULTS DISPLAY ==========
+        function showResults() {
+            document.getElementById('progress-section').classList.remove('visible');
+            document.getElementById('results-section').classList.add('visible');
+
+            // Update meta
+            document.getElementById('results-meta').textContent = 
+                `${scanResults.totalRecords.toLocaleString()} records analyzed in ${(scanResults.processingTime / 1000).toFixed(1)}s`;
+
+            // Update summary
+            document.getElementById('summary-deny').textContent = scanResults.summary.deny;
+            document.getElementById('summary-review').textContent = scanResults.summary.review;
+            document.getElementById('summary-stepup').textContent = scanResults.summary.stepup;
+            document.getElementById('summary-approve').textContent = scanResults.summary.approve;
+            document.getElementById('summary-total').textContent = scanResults.totalRecords;
+
+            // Reset filters and render table
+            currentFilter = 'all';
+            currentPage = 1;
+            filteredResults = [...scanResults.results];
+            sortResults('risk');
+        }
+
+        function filterResults(filter) {
+            currentFilter = filter;
+            currentPage = 1;
+
+            // Update button states
+            document.querySelectorAll('.filter-btn, .summary-card').forEach(el => {
+                el.classList.toggle('active', el.dataset.filter === filter);
+            });
+
+            // Filter results
+            if (filter === 'all') {
+                filteredResults = [...scanResults.results];
+            } else if (filter === 'deny') {
+                filteredResults = scanResults.results.filter(r => r.decision === 'AUTO-DENY' || r.decision === 'DENY');
+            } else if (filter === 'review') {
+                filteredResults = scanResults.results.filter(r => r.decision === 'REVIEW');
+            } else if (filter === 'stepup') {
+                filteredResults = scanResults.results.filter(r => r.decision === 'STEP-UP');
+            } else if (filter === 'approve') {
+                filteredResults = scanResults.results.filter(r => r.decision === 'APPROVE');
+            }
+
+            renderTable();
+        }
+
+        function searchResults() {
+            const query = document.getElementById('search-input').value.toLowerCase();
+            currentPage = 1;
+
+            if (!query) {
+                filterResults(currentFilter);
+                return;
+            }
+
+            filteredResults = scanResults.results.filter(r => 
+                r.id.toLowerCase().includes(query) || 
+                r.ssn_masked.includes(query)
+            );
+
+            renderTable();
+        }
+
+        function sortResults(field) {
+            if (currentSort.field === field) {
+                currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+            } else {
+                currentSort.field = field;
+                currentSort.direction = 'desc';
+            }
+
+            filteredResults.sort((a, b) => {
+                let valA, valB;
+                
+                switch (field) {
+                    case 'risk':
+                        valA = a.risk_score;
+                        valB = b.risk_score;
+                        break;
+                    case 'synthetic':
+                        valA = a.synthetic_probability;
+                        valB = b.synthetic_probability;
+                        break;
+                    case 'decision':
+                        const order = { 'AUTO-DENY': 0, 'DENY': 1, 'REVIEW': 2, 'STEP-UP': 3, 'APPROVE': 4, 'ERROR': 5 };
+                        valA = order[a.decision] ?? 5;
+                        valB = order[b.decision] ?? 5;
+                        break;
+                    default:
+                        valA = a[field] || '';
+                        valB = b[field] || '';
+                }
+
+                if (valA < valB) return currentSort.direction === 'asc' ? -1 : 1;
+                if (valA > valB) return currentSort.direction === 'asc' ? 1 : -1;
+                return 0;
+            });
+
+            renderTable();
+        }
+
+        function renderTable() {
+            const start = (currentPage - 1) * PAGE_SIZE;
+            const end = start + PAGE_SIZE;
+            const pageData = filteredResults.slice(start, end);
+
+            const tbody = document.getElementById('results-table');
+            tbody.innerHTML = pageData.map(r => {
+                const riskClass = r.risk_score >= 0.6 ? 'high' : r.risk_score >= 0.35 ? 'medium' : 'low';
+                let decisionClass = 'approve';
+                if (r.decision === 'AUTO-DENY' || r.decision === 'DENY') decisionClass = 'deny';
+                else if (r.decision === 'REVIEW' || r.decision === 'STEP-UP') decisionClass = 'review';
+
+                const patterns = (r.patterns || []).slice(0, 4).map(p => {
+                    const isCritical = p.includes('ITIN') || p.includes('EIN') || p.includes('INVALID') || p.includes('CPN');
+                    return `<span class="pattern-tag ${isCritical ? 'critical' : ''}">${p.replace('V1-', '').replace('DOJ-', '')}</span>`;
+                }).join('');
+
+                const morePatterns = (r.patterns || []).length > 4 ? 
+                    `<span class="pattern-tag">+${r.patterns.length - 4} more</span>` : '';
+
+                return `
+                    <tr>
+                        <td class="cell-id">${escapeHtml(r.id)}</td>
+                        <td class="cell-ssn">${r.ssn_masked}</td>
+                        <td class="cell-score ${riskClass}">${(r.risk_score * 100).toFixed(1)}%</td>
+                        <td><span class="cell-decision ${decisionClass}">${r.decision}</span></td>
+                        <td class="cell-patterns">${patterns}${morePatterns}</td>
+                        <td class="cell-probability">${(r.synthetic_probability * 100).toFixed(0)}%</td>
+                    </tr>
+                `;
+            }).join('');
+
+            // Update info
+            document.getElementById('table-info').textContent = 
+                `Showing ${start + 1}-${Math.min(end, filteredResults.length)} of ${filteredResults.length} results`;
+
+            // Render pagination
+            renderPagination();
+        }
+
+        function renderPagination() {
+            const totalPages = Math.ceil(filteredResults.length / PAGE_SIZE);
+            const pagination = document.getElementById('pagination');
+
+            if (totalPages <= 1) {
+                pagination.innerHTML = '';
+                return;
+            }
+
+            let html = `
+                <button class="page-btn" onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>‹</button>
+            `;
+
+            const maxVisible = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+            
+            if (endPage - startPage < maxVisible - 1) {
+                startPage = Math.max(1, endPage - maxVisible + 1);
+            }
+
+            if (startPage > 1) {
+                html += `<button class="page-btn" onclick="goToPage(1)">1</button>`;
+                if (startPage > 2) html += `<span style="padding: 0 8px; color: var(--text-muted);">...</span>`;
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+            }
+
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) html += `<span style="padding: 0 8px; color: var(--text-muted);">...</span>`;
+                html += `<button class="page-btn" onclick="goToPage(${totalPages})">${totalPages}</button>`;
+            }
+
+            html += `
+                <button class="page-btn" onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>›</button>
+            `;
+
+            pagination.innerHTML = html;
+        }
+
+        function goToPage(page) {
+            const totalPages = Math.ceil(filteredResults.length / PAGE_SIZE);
+            if (page < 1 || page > totalPages) return;
+            currentPage = page;
+            renderTable();
+        }
+
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        // ========== EXPORT ==========
+        function exportCSV() {
+            if (!scanResults) return;
+
+            const headers = ['ID', 'SSN', 'Risk Score', 'Decision', 'Auto Deny', 'Synthetic Probability', 'Pattern Count', 'Patterns'];
+            const rows = scanResults.results.map(r => [
+                r.id,
+                r.ssn_masked,
+                r.risk_score,
+                r.decision,
+                r.auto_deny,
+                r.synthetic_probability,
+                r.pattern_count,
+                (r.patterns || []).join('; ')
+            ]);
+
+            const csv = [headers, ...rows].map(row => 
+                row.map(cell => {
+                    const str = String(cell);
+                    return str.includes(',') || str.includes('"') ? `"${str.replace(/"/g, '""')}"` : str;
+                }).join(',')
+            ).join('\n');
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `neureon_scan_${new Date().toISOString().slice(0, 10)}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // ========== NEW SCAN ==========
+        function newScan() {
+            scanResults = null;
+            filteredResults = null;
+            parsedData = null;
+            currentPage = 1;
+            currentFilter = 'all';
+
+            document.getElementById('results-section').classList.remove('visible');
+            document.getElementById('file-info').classList.remove('visible');
+            document.getElementById('scan-actions').classList.remove('visible');
+            uploadZone.classList.remove('has-file');
+            fileInput.value = '';
+            document.getElementById('search-input').value = '';
+        }
+    </script>
+</body>
+</html>
