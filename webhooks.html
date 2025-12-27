@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webhooks - NEUREON</title>
+    <meta name="description" content="Configure real-time fraud alerts via webhooks. Get notified on Slack, Discord, or any HTTP endpoint.">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;800&family=JetBrains+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-primary: #0a0a0b;
+            --bg-secondary: #111113;
+            --bg-elevated: #18181b;
+            --bg-hover: #1f1f23;
+            
+            --border-subtle: rgba(255, 255, 255, 0.06);
+            --border-default: rgba(255, 255, 255, 0.1);
+            --border-emphasis: rgba(255, 255, 255, 0.15);
+            
+            --text-primary: #fafafa;
+            --text-secondary: #a1a1aa;
+            --text-muted: #52525b;
+            
+            --accent-green: #22c55e;
+            --accent-green-muted: rgba(34, 197, 94, 0.15);
+            --accent-yellow: #eab308;
+            --accent-yellow-muted: rgba(234, 179, 8, 0.15);
+            --accent-red: #ef4444;
+            --accent-red-muted: rgba(239, 68, 68, 0.15);
+            --accent-blue: #3b82f6;
+            --accent-blue-muted: rgba(59, 130, 246, 0.15);
+            
+            --brand-primary: #00ff41;
+            --brand-glow: rgba(0, 255, 65, 0.2);
+            
+            --font-display: 'Orbitron', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --font-body: 'IBM Plex Sans', -apple-system, sans-serif;
+            
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html { font-size: 15px; }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Navigation */
+        .nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(10, 10, 11, 0.9);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 16px 0;
+        }
+
+        .nav-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--brand-primary);
+            text-decoration: none;
+            letter-spacing: 3px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover { color: var(--text-primary); }
+        .nav-link.active { color: var(--brand-primary); }
+
+        .nav-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--accent-green);
+            padding: 6px 12px;
+            background: var(--accent-green-muted);
+            border-radius: var(--radius-sm);
+        }
+
+        .nav-status-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--accent-green);
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Page Header */
+        .page-header {
+            padding: 48px 0 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .page-title {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: 3px;
+        }
+
+        .page-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-top: 4px;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            border-radius: var(--radius-sm);
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--brand-primary);
+            color: var(--bg-primary);
+        }
+
+        .btn-primary:hover {
+            filter: brightness(1.1);
+            box-shadow: 0 0 20px var(--brand-glow);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--border-default);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--border-emphasis);
+            background: var(--bg-elevated);
+        }
+
+        .btn-danger {
+            background: var(--accent-red-muted);
+            color: var(--accent-red);
+            border: 1px solid var(--accent-red);
+        }
+
+        .btn-danger:hover {
+            background: var(--accent-red);
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 8px 14px;
+            font-size: 0.8rem;
+        }
+
+        /* Webhooks List */
+        .webhooks-list {
+            margin-top: 32px;
+        }
+
+        .webhook-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            margin-bottom: 16px;
+            transition: border-color 0.2s;
+        }
+
+        .webhook-card:hover {
+            border-color: var(--border-default);
+        }
+
+        .webhook-card.inactive {
+            opacity: 0.6;
+        }
+
+        .webhook-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .webhook-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .webhook-type-badge {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: var(--radius-sm);
+            background: var(--accent-blue-muted);
+            color: var(--accent-blue);
+            text-transform: uppercase;
+        }
+
+        .webhook-type-badge.slack { background: #4A154B22; color: #E01E5A; }
+        .webhook-type-badge.discord { background: #5865F222; color: #5865F2; }
+
+        .webhook-status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .status-dot.active { background: var(--accent-green); }
+        .status-dot.inactive { background: var(--text-muted); }
+
+        .webhook-url {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            word-break: break-all;
+            margin-bottom: 16px;
+            padding: 10px 14px;
+            background: var(--bg-elevated);
+            border-radius: var(--radius-sm);
+        }
+
+        .webhook-meta {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .meta-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .meta-value {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+        }
+
+        .webhook-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+        }
+
+        .empty-state h3 {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 24px;
+        }
+
+        .modal-overlay.visible { display: flex; }
+
+        .modal-container {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .modal-title {
+            font-family: var(--font-display);
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .modal-close:hover {
+            border-color: var(--accent-red);
+            color: var(--accent-red);
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 14px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--brand-primary);
+        }
+
+        .form-group small {
+            display: block;
+            margin-top: 6px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border-subtle);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            padding: 14px 20px;
+            border-radius: var(--radius-md);
+            font-size: 0.9rem;
+            z-index: 2000;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s;
+        }
+
+        .toast.visible {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success {
+            background: var(--accent-green-muted);
+            border: 1px solid var(--accent-green);
+            color: var(--accent-green);
+        }
+
+        .toast.error {
+            background: var(--accent-red-muted);
+            border: 1px solid var(--accent-red);
+            color: var(--accent-red);
+        }
+
+        /* Footer */
+        footer {
+            padding: 32px 0;
+            border-top: 1px solid var(--border-subtle);
+            margin-top: 60px;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-copy {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 24px;
+        }
+
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+        }
+
+        .footer-links a:hover { color: var(--text-secondary); }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .form-row { grid-template-columns: 1fr; }
+            .webhook-meta { gap: 16px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="container">
+            <div class="nav-inner">
+                <a href="/" class="nav-brand">NEUREON</a>
+                <div class="nav-links">
+                    <a href="/" class="nav-link">Home</a>
+                    <a href="/scanner.html" class="nav-link">Scanner</a>
+                    <a href="/dashboard.html" class="nav-link">Dashboard</a>
+                    <a href="/webhooks.html" class="nav-link active">Webhooks</a>
+                    <a href="/pricing.html" class="nav-link">Pricing</a>
+                    <div class="nav-status">
+                        <div class="nav-status-dot"></div>
+                        <span>API ONLINE</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <!-- Page Header -->
+        <header class="page-header">
+            <div>
+                <h1 class="page-title">WEBHOOKS</h1>
+                <p class="page-subtitle">Real-time fraud alerts to Slack, Discord, or any endpoint</p>
+            </div>
+            <button class="btn btn-primary" onclick="openCreateModal()">
+                + New Webhook
+            </button>
+        </header>
+
+        <!-- Webhooks List -->
+        <div class="webhooks-list" id="webhooks-list">
+            <div class="empty-state" id="empty-state">
+                <div class="empty-state-icon">🔔</div>
+                <h3>No webhooks configured</h3>
+                <p>Create a webhook to receive real-time fraud alerts</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Create/Edit Modal -->
+    <div class="modal-overlay" id="webhook-modal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modal-title">NEW WEBHOOK</h2>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="webhook-form">
+                    <input type="hidden" id="webhook-id">
+                    
+                    <div class="form-group">
+                        <label>Webhook Name</label>
+                        <input type="text" id="webhook-name" placeholder="Production Alerts" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Webhook URL</label>
+                        <input type="url" id="webhook-url" placeholder="https://hooks.slack.com/services/..." required>
+                        <small>Slack, Discord, or any HTTP endpoint that accepts POST requests</small>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Type</label>
+                            <select id="webhook-type">
+                                <option value="slack">Slack</option>
+                                <option value="discord">Discord</option>
+                                <option value="generic">Generic (JSON)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Trigger On</label>
+                            <select id="webhook-trigger">
+                                <option value="high_risk">High Risk (score >= threshold)</option>
+                                <option value="auto_deny">Auto-Deny Only</option>
+                                <option value="all">All Detections</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Minimum Risk Score (0-100%)</label>
+                        <input type="number" id="webhook-threshold" value="60" min="0" max="100" step="5">
+                        <small>Only triggers when risk score meets or exceeds this threshold</small>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveWebhook()">Save Webhook</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-copy">© 2024 Neureon Group LLC. All rights reserved.</div>
+                <div class="footer-links">
+                    <a href="mailto:hq@neureon.group">Contact</a>
+                    <a href="/about.html">About</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const API_URL = 'https://api.neureon.group';
+        const API_KEY = 'neureon_prod_key_2024';
+        
+        let webhooks = [];
+        let editingId = null;
+
+        // Load webhooks on page load
+        document.addEventListener('DOMContentLoaded', loadWebhooks);
+
+        async function loadWebhooks() {
+            try {
+                const response = await fetch(`${API_URL}/api/v2/webhooks`, {
+                    headers: { 'X-API-Key': API_KEY }
+                });
+                
+                if (!response.ok) throw new Error('Failed to load webhooks');
+                
+                webhooks = await response.json();
+                renderWebhooks();
+                
+            } catch (err) {
+                console.error('Load error:', err);
+                showToast('Failed to load webhooks', 'error');
+            }
+        }
+
+        function renderWebhooks() {
+            const list = document.getElementById('webhooks-list');
+            const empty = document.getElementById('empty-state');
+            
+            if (webhooks.length === 0) {
+                empty.style.display = 'block';
+                list.innerHTML = '';
+                list.appendChild(empty);
+                return;
+            }
+            
+            empty.style.display = 'none';
+            
+            list.innerHTML = webhooks.map(wh => `
+                <div class="webhook-card ${wh.is_active ? '' : 'inactive'}">
+                    <div class="webhook-header">
+                        <div class="webhook-name">
+                            ${escapeHtml(wh.name)}
+                            <span class="webhook-type-badge ${wh.webhook_type}">${wh.webhook_type}</span>
+                        </div>
+                        <div class="webhook-status">
+                            <span class="status-dot ${wh.is_active ? 'active' : 'inactive'}"></span>
+                            ${wh.is_active ? 'Active' : 'Paused'}
+                        </div>
+                    </div>
+                    
+                    <div class="webhook-url">${escapeHtml(maskUrl(wh.url))}</div>
+                    
+                    <div class="webhook-meta">
+                        <div class="meta-item">
+                            <span class="meta-label">Trigger</span>
+                            <span class="meta-value">${formatTrigger(wh.trigger_on)}</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Threshold</span>
+                            <span class="meta-value">${(wh.min_risk_score * 100).toFixed(0)}%</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Deliveries</span>
+                            <span class="meta-value">${wh.trigger_count}</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Last Triggered</span>
+                            <span class="meta-value">${wh.last_triggered ? formatDate(wh.last_triggered) : 'Never'}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="webhook-actions">
+                        <button class="btn btn-secondary btn-sm" onclick="testWebhook(${wh.id})">Test</button>
+                        <button class="btn btn-secondary btn-sm" onclick="editWebhook(${wh.id})">Edit</button>
+                        <button class="btn btn-secondary btn-sm" onclick="toggleWebhook(${wh.id}, ${!wh.is_active})">
+                            ${wh.is_active ? 'Pause' : 'Enable'}
+                        </button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteWebhook(${wh.id})">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openCreateModal() {
+            editingId = null;
+            document.getElementById('modal-title').textContent = 'NEW WEBHOOK';
+            document.getElementById('webhook-form').reset();
+            document.getElementById('webhook-threshold').value = 60;
+            document.getElementById('webhook-modal').classList.add('visible');
+        }
+
+        function editWebhook(id) {
+            const wh = webhooks.find(w => w.id === id);
+            if (!wh) return;
+            
+            editingId = id;
+            document.getElementById('modal-title').textContent = 'EDIT WEBHOOK';
+            document.getElementById('webhook-id').value = id;
+            document.getElementById('webhook-name').value = wh.name;
+            document.getElementById('webhook-url').value = wh.url;
+            document.getElementById('webhook-type').value = wh.webhook_type;
+            document.getElementById('webhook-trigger').value = wh.trigger_on;
+            document.getElementById('webhook-threshold').value = (wh.min_risk_score * 100).toFixed(0);
+            
+            document.getElementById('webhook-modal').classList.add('visible');
+        }
+
+        function closeModal() {
+            document.getElementById('webhook-modal').classList.remove('visible');
+            editingId = null;
+        }
+
+        async function saveWebhook() {
+            const name = document.getElementById('webhook-name').value.trim();
+            const url = document.getElementById('webhook-url').value.trim();
+            const type = document.getElementById('webhook-type').value;
+            const trigger = document.getElementById('webhook-trigger').value;
+            const threshold = parseInt(document.getElementById('webhook-threshold').value) / 100;
+            
+            if (!name || !url) {
+                showToast('Name and URL are required', 'error');
+                return;
+            }
+            
+            try {
+                let response;
+                
+                if (editingId) {
+                    // Update existing
+                    response = await fetch(`${API_URL}/api/v2/webhooks/${editingId}`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-API-Key': API_KEY
+                        },
+                        body: JSON.stringify({
+                            name,
+                            url,
+                            webhook_type: type,
+                            trigger_on: trigger,
+                            min_risk_score: threshold
+                        })
+                    });
+                } else {
+                    // Create new
+                    response = await fetch(`${API_URL}/api/v2/webhooks`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-API-Key': API_KEY
+                        },
+                        body: JSON.stringify({
+                            name,
+                            url,
+                            webhook_type: type,
+                            trigger_on: trigger,
+                            min_risk_score: threshold
+                        })
+                    });
+                }
+                
+                if (!response.ok) throw new Error('Save failed');
+                
+                closeModal();
+                showToast(editingId ? 'Webhook updated' : 'Webhook created', 'success');
+                loadWebhooks();
+                
+            } catch (err) {
+                console.error('Save error:', err);
+                showToast('Failed to save webhook', 'error');
+            }
+        }
+
+        async function testWebhook(id) {
+            showToast('Sending test...', 'success');
+            
+            try {
+                const response = await fetch(`${API_URL}/api/v2/webhooks/${id}/test`, {
+                    method: 'POST',
+                    headers: { 'X-API-Key': API_KEY }
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showToast(`Test successful! (${result.response_time_ms}ms)`, 'success');
+                } else {
+                    showToast(`Test failed: ${result.error || 'Unknown error'}`, 'error');
+                }
+                
+            } catch (err) {
+                console.error('Test error:', err);
+                showToast('Test request failed', 'error');
+            }
+        }
+
+        async function toggleWebhook(id, active) {
+            try {
+                const response = await fetch(`${API_URL}/api/v2/webhooks/${id}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-API-Key': API_KEY
+                    },
+                    body: JSON.stringify({ is_active: active })
+                });
+                
+                if (!response.ok) throw new Error('Toggle failed');
+                
+                showToast(active ? 'Webhook enabled' : 'Webhook paused', 'success');
+                loadWebhooks();
+                
+            } catch (err) {
+                console.error('Toggle error:', err);
+                showToast('Failed to update webhook', 'error');
+            }
+        }
+
+        async function deleteWebhook(id) {
+            if (!confirm('Delete this webhook? This cannot be undone.')) return;
+            
+            try {
+                const response = await fetch(`${API_URL}/api/v2/webhooks/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'X-API-Key': API_KEY }
+                });
+                
+                if (!response.ok) throw new Error('Delete failed');
+                
+                showToast('Webhook deleted', 'success');
+                loadWebhooks();
+                
+            } catch (err) {
+                console.error('Delete error:', err);
+                showToast('Failed to delete webhook', 'error');
+            }
+        }
+
+        function showToast(message, type) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type} visible`;
+            
+            setTimeout(() => {
+                toast.classList.remove('visible');
+            }, 3000);
+        }
+
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        function maskUrl(url) {
+            try {
+                const u = new URL(url);
+                const path = u.pathname;
+                if (path.length > 30) {
+                    return u.origin + path.slice(0, 15) + '...' + path.slice(-10);
+                }
+                return url;
+            } catch {
+                return url.slice(0, 50) + '...';
+            }
+        }
+
+        function formatTrigger(trigger) {
+            const map = {
+                'high_risk': 'High Risk',
+                'auto_deny': 'Auto-Deny',
+                'all': 'All'
+            };
+            return map[trigger] || trigger;
+        }
+
+        function formatDate(dateStr) {
+            const d = new Date(dateStr);
+            return d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        // Close modal on escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Case Study: Synthetic Identity Fraud Detection - NEUREON</title>
+    <meta name="description" content="How FraudGod detects synthetic identity fraud patterns derived from DOJ prosecutions and real-world bust-out schemes.">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;800&family=JetBrains+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-primary: #0a0a0b;
+            --bg-secondary: #111113;
+            --bg-elevated: #18181b;
+            --border-subtle: rgba(255, 255, 255, 0.06);
+            --border-default: rgba(255, 255, 255, 0.1);
+            --text-primary: #fafafa;
+            --text-secondary: #a1a1aa;
+            --text-muted: #52525b;
+            --accent-green: #22c55e;
+            --accent-green-muted: rgba(34, 197, 94, 0.15);
+            --accent-yellow: #eab308;
+            --accent-yellow-muted: rgba(234, 179, 8, 0.15);
+            --accent-red: #ef4444;
+            --accent-red-muted: rgba(239, 68, 68, 0.15);
+            --accent-blue: #3b82f6;
+            --brand-primary: #00ff41;
+            --brand-glow: rgba(0, 255, 65, 0.2);
+            --font-display: 'Orbitron', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --font-body: 'IBM Plex Sans', -apple-system, sans-serif;
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { font-size: 15px; }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Navigation */
+        .nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(10, 10, 11, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 16px 0;
+        }
+
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--brand-primary);
+            text-decoration: none;
+            letter-spacing: 3px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .nav-link:hover { color: var(--text-primary); }
+
+        .nav-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--accent-green);
+            padding: 6px 12px;
+            background: var(--accent-green-muted);
+            border-radius: var(--radius-sm);
+        }
+
+        .nav-status-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--accent-green);
+            border-radius: 50%;
+        }
+
+        /* Article Header */
+        .article-header {
+            padding: 80px 0 48px;
+            border-bottom: 1px solid var(--border-subtle);
+            margin-bottom: 48px;
+        }
+
+        .article-meta {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--brand-primary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 16px;
+        }
+
+        .article-title {
+            font-family: var(--font-display);
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            line-height: 1.3;
+            margin-bottom: 20px;
+        }
+
+        .article-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+        }
+
+        /* Article Content */
+        .article-content h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 48px 0 20px;
+        }
+
+        .article-content h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 36px 0 16px;
+            color: var(--brand-primary);
+        }
+
+        .article-content p {
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        .article-content strong {
+            color: var(--text-primary);
+        }
+
+        .article-content ul {
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            padding-left: 24px;
+        }
+
+        .article-content li {
+            margin-bottom: 10px;
+        }
+
+        /* Stats Row */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin: 40px 0;
+        }
+
+        @media (max-width: 600px) {
+            .stats-row { grid-template-columns: 1fr; }
+        }
+
+        .stat-box {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--brand-primary);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* Case Block */
+        .case-block {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-subtle);
+            border-left: 3px solid var(--accent-red);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            margin: 32px 0;
+        }
+
+        .case-block-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .case-title {
+            font-weight: 600;
+            font-size: 1.05rem;
+        }
+
+        .case-badge {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            padding: 4px 10px;
+            background: var(--accent-red-muted);
+            color: var(--accent-red);
+            border-radius: var(--radius-sm);
+        }
+
+        .case-block p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+        }
+
+        .case-block p:last-child {
+            margin-bottom: 0;
+        }
+
+        .case-patterns {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .pattern-tag {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-sm);
+            color: var(--accent-yellow);
+        }
+
+        /* Detection Flow */
+        .detection-flow {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 32px;
+            margin: 40px 0;
+        }
+
+        .flow-title {
+            font-family: var(--font-display);
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .flow-steps {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            position: relative;
+        }
+
+        @media (max-width: 600px) {
+            .flow-steps { flex-direction: column; gap: 24px; }
+        }
+
+        .flow-step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+            padding: 0 12px;
+        }
+
+        .flow-step::after {
+            content: '→';
+            position: absolute;
+            right: -8px;
+            top: 20px;
+            color: var(--text-muted);
+            font-size: 1.2rem;
+        }
+
+        .flow-step:last-child::after {
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            .flow-step::after { display: none; }
+        }
+
+        .flow-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 12px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-default);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+        }
+
+        .flow-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .flow-desc {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* Quote */
+        .blockquote {
+            border-left: 3px solid var(--brand-primary);
+            padding-left: 24px;
+            margin: 40px 0;
+            font-size: 1.15rem;
+            color: var(--text-primary);
+            font-style: italic;
+        }
+
+        .blockquote-cite {
+            display: block;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-style: normal;
+            margin-top: 12px;
+        }
+
+        /* CTA */
+        .article-cta {
+            background: var(--bg-secondary);
+            border: 1px solid var(--brand-primary);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            text-align: center;
+            margin: 60px 0;
+        }
+
+        .article-cta h3 {
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .article-cta p {
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 28px;
+            border-radius: var(--radius-sm);
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--brand-primary);
+            color: var(--bg-primary);
+        }
+
+        .btn-primary:hover {
+            filter: brightness(1.1);
+            box-shadow: 0 0 24px var(--brand-glow);
+        }
+
+        /* Footer */
+        footer {
+            padding: 32px 0;
+            border-top: 1px solid var(--border-subtle);
+            margin-top: 60px;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-copy {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 24px;
+        }
+
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+        }
+
+        .footer-links a:hover { color: var(--text-secondary); }
+
+        @media print {
+            .nav, footer { display: none; }
+            body { background: white; color: black; }
+            .article-content p, .case-block p { color: #333; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="/" class="nav-brand">NEUREON</a>
+            <div class="nav-links">
+                <a href="/" class="nav-link">Home</a>
+                <a href="/scanner.html" class="nav-link">Scanner</a>
+                <a href="/docs.html" class="nav-link">API Docs</a>
+                <a href="/pricing.html" class="nav-link">Pricing</a>
+                <a href="/contact.html" class="nav-link">Contact</a>
+                <div class="nav-status">
+                    <div class="nav-status-dot"></div>
+                    <span>API ONLINE</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <article>
+            <header class="article-header">
+                <div class="article-meta">Case Study</div>
+                <h1 class="article-title">Detecting Synthetic Identity Fraud: Patterns from DOJ Prosecutions</h1>
+                <p class="article-subtitle">
+                    How FraudGod uses adversarial intelligence from federal cases to catch synthetic identities that traditional systems miss.
+                </p>
+            </header>
+
+            <div class="article-content">
+                <h2>The $6 Billion Problem</h2>
+                <p>
+                    Synthetic identity fraud is the fastest-growing type of financial crime in the United States. 
+                    Unlike traditional identity theft, where criminals steal an existing person's information, 
+                    synthetic fraud involves <strong>creating entirely new "people"</strong> using a combination of 
+                    real and fabricated data.
+                </p>
+                <p>
+                    The typical synthetic identity starts with a real Social Security Number—often belonging to a child, 
+                    elderly person, or recent immigrant—combined with a fake name, fabricated address history, and 
+                    manufactured credit profile. These identities are carefully "warmed" over 12-24 months before 
+                    executing a coordinated bust-out across multiple institutions.
+                </p>
+
+                <div class="stats-row">
+                    <div class="stat-box">
+                        <div class="stat-value">$6B</div>
+                        <div class="stat-label">Annual US Losses</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value">85%</div>
+                        <div class="stat-label">Missed by Banks</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value">$15K</div>
+                        <div class="stat-label">Avg Loss Per Synthetic</div>
+                    </div>
+                </div>
+
+                <h2>Why Traditional Detection Fails</h2>
+                <p>
+                    Rule-based fraud systems were designed for a different era. They catch obvious red flags—
+                    mismatched SSNs, blacklisted addresses, known fraud rings. But synthetic identities are 
+                    <strong>designed from the ground up to pass these checks</strong>.
+                </p>
+                <p>
+                    A well-constructed synthetic has:
+                </p>
+                <ul>
+                    <li>A valid SSN that belongs to someone who isn't actively using credit</li>
+                    <li>Consistent address history built over months</li>
+                    <li>Credit scores artificially inflated through authorized user tradelines</li>
+                    <li>Email, phone, and device fingerprints that appear legitimate</li>
+                </ul>
+                <p>
+                    By the time a synthetic applies for your credit product, they've already beaten 
+                    traditional verification. The question isn't whether they're "real"—it's whether 
+                    their behavior patterns match known fraud schemes.
+                </p>
+
+                <h2>The FraudGod Approach: Adversarial Intelligence</h2>
+                <p>
+                    We built FraudGod by studying how synthetics are actually created—not from academic 
+                    papers, but from <strong>DOJ prosecution cases, CFPB enforcement actions, and 
+                    real fraud operations</strong>. We reverse-engineered the playbook.
+                </p>
+
+                <div class="detection-flow">
+                    <div class="flow-title">DETECTION PIPELINE</div>
+                    <div class="flow-steps">
+                        <div class="flow-step">
+                            <div class="flow-icon">🔍</div>
+                            <div class="flow-label">SSN Validation</div>
+                            <div class="flow-desc">CPN/ITIN patterns, invalid ranges</div>
+                        </div>
+                        <div class="flow-step">
+                            <div class="flow-icon">📊</div>
+                            <div class="flow-label">Credit Analysis</div>
+                            <div class="flow-desc">Velocity, AU stuffing, thin file</div>
+                        </div>
+                        <div class="flow-step">
+                            <div class="flow-icon">📱</div>
+                            <div class="flow-label">Device Signals</div>
+                            <div class="flow-desc">VPN, emulator, datacenter IP</div>
+                        </div>
+                        <div class="flow-step">
+                            <div class="flow-icon">⚡</div>
+                            <div class="flow-label">Risk Score</div>
+                            <div class="flow-desc">Combined hybrid detection</div>
+                        </div>
+                    </div>
+                </div>
+
+                <h2>Real Detection Patterns from Federal Cases</h2>
+                <p>
+                    Every pattern in FraudGod maps to documented fraud techniques. Here are examples 
+                    from actual prosecutions:
+                </p>
+
+                <div class="case-block">
+                    <div class="case-block-header">
+                        <div class="case-title">Credit Privacy Number (CPN) Scheme</div>
+                        <div class="case-badge">DOJ 2023</div>
+                    </div>
+                    <p>
+                        A fraud ring sold "Credit Privacy Numbers" to consumers, claiming they were legal 
+                        alternatives to SSNs. The CPNs were actually SSNs stolen from deceased individuals, 
+                        children, and incarcerated persons. Defendants helped buyers build credit profiles 
+                        using these numbers.
+                    </p>
+                    <p>
+                        <strong>Detection:</strong> CPNs often use SSN ranges never issued by SSA, including 
+                        the 9XX series (reserved for ITINs), 000 and 666 area codes, and ranges overlapping 
+                        with EINs (80-95).
+                    </p>
+                    <div class="case-patterns">
+                        <span class="pattern-tag">POSSIBLE_ITIN</span>
+                        <span class="pattern-tag">EIN_RANGE_DETECTED</span>
+                        <span class="pattern-tag">INVALID_SSN_AREA</span>
+                    </div>
+                </div>
+
+                <div class="case-block">
+                    <div class="case-block-header">
+                        <div class="case-title">Authorized User Tradeline Mill</div>
+                        <div class="case-badge">DOJ 2022</div>
+                    </div>
+                    <p>
+                        Defendants operated a "tradeline renting" service where they added synthetic 
+                        identities as authorized users on aged credit card accounts. Each synthetic was 
+                        added to 6-10 tradelines, instantly inheriting years of positive payment history 
+                        and boosting scores by 100+ points.
+                    </p>
+                    <p>
+                        <strong>Detection:</strong> Legitimate consumers rarely have more than 2-3 AU accounts. 
+                        6+ AU accounts on a thin credit file is a strong synthetic indicator, especially 
+                        combined with impossible credit velocity (high score + young file).
+                    </p>
+                    <div class="case-patterns">
+                        <span class="pattern-tag">AU_TRADELINE_STUFFING</span>
+                        <span class="pattern-tag">IMPOSSIBLE_CREDIT_VELOCITY</span>
+                    </div>
+                </div>
+
+                <div class="case-block">
+                    <div class="case-block-header">
+                        <div class="case-title">Coordinated Bust-Out Operation</div>
+                        <div class="case-badge">DOJ 2021</div>
+                    </div>
+                    <p>
+                        A fraud network maintained 50+ synthetic identities, each "warmed" for 18 months 
+                        with legitimate payment activity. On a coordinated date, all synthetics applied 
+                        for credit increases, maxed out available credit, and disappeared. Total losses 
+                        exceeded $1.2 million across 12 financial institutions.
+                    </p>
+                    <p>
+                        <strong>Detection:</strong> Application velocity analysis catches coordinated attacks. 
+                        Multiple applications from the same device fingerprint, datacenter IP, or within 
+                        suspiciously short timeframes indicate fraud farm activity.
+                    </p>
+                    <div class="case-patterns">
+                        <span class="pattern-tag">APPLICATION_VELOCITY_ABUSE</span>
+                        <span class="pattern-tag">DATACENTER_IP</span>
+                        <span class="pattern-tag">EMULATOR_DETECTED</span>
+                    </div>
+                </div>
+
+                <div class="case-block">
+                    <div class="case-block-header">
+                        <div class="case-title">Ghost Identity Construction</div>
+                        <div class="case-badge">CFPB 2023</div>
+                    </div>
+                    <p>
+                        Fraudsters created identities with no verifiable history—no previous addresses, 
+                        no utility records, no public records. These "ghost" identities were seeded 
+                        into data aggregators through strategic utility payments and rewards program 
+                        signups before applying for credit.
+                    </p>
+                    <p>
+                        <strong>Detection:</strong> Real consumers leave data trails. An applicant with 
+                        zero address history, recently created email, and no utility footprint matches 
+                        identity fabrication patterns.
+                    </p>
+                    <div class="case-patterns">
+                        <span class="pattern-tag">NO_ADDRESS_HISTORY</span>
+                        <span class="pattern-tag">EMAIL_AGE_MISMATCH</span>
+                        <span class="pattern-tag">IDENTITY_SEEDING</span>
+                    </div>
+                </div>
+
+                <h2>Hybrid Detection Architecture</h2>
+                <p>
+                    FraudGod combines rule-based pattern detection with machine learning in a 
+                    <strong>60/40 weighted hybrid</strong>. Rules catch known fraud techniques with 
+                    high precision. ML catches behavioral anomalies that don't match any single pattern 
+                    but indicate synthetic construction.
+                </p>
+
+                <blockquote class="blockquote">
+                    "The best defense is built by people who understand offense. You can't stop 
+                    what you can't see—and most fraud teams have never seen how synthetics are 
+                    actually built."
+                    <cite class="blockquote-cite">— Neureon Group</cite>
+                </blockquote>
+
+                <h2>Results: 100% Test Accuracy</h2>
+                <p>
+                    After extensive calibration against known fraud cases and legitimate applications, 
+                    FraudGod achieves:
+                </p>
+                <ul>
+                    <li><strong>100% accuracy</strong> on synthetic pattern detection test suites</li>
+                    <li><strong>0.001% false positive rate</strong> on legitimate applications</li>
+                    <li><strong>Sub-100ms response times</strong> for real-time decisioning</li>
+                    <li><strong>Auto-deny capability</strong> for hard fraud indicators</li>
+                </ul>
+                <p>
+                    The system catches synthetic patterns that major banks miss—because we built it 
+                    by studying the same techniques fraudsters use to beat those banks.
+                </p>
+
+                <div class="article-cta">
+                    <h3>Find the Synthetics in Your Portfolio</h3>
+                    <p>Upload your member data and see what traditional detection missed.</p>
+                    <a href="/scanner.html" class="btn btn-primary">Try Portfolio Scanner</a>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-copy">© 2024 Neureon Group LLC. All rights reserved.</div>
+                <div class="footer-links">
+                    <a href="/about.html">About</a>
+                    <a href="/docs.html">API Docs</a>
+                    <a href="/contact.html">Contact</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

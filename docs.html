@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Documentation - NEUREON</title>
+    <meta name="description" content="FraudGod API documentation. Integration guides, endpoints, and code examples for synthetic identity fraud detection.">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;800&family=JetBrains+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-primary: #0a0a0b;
+            --bg-secondary: #111113;
+            --bg-elevated: #18181b;
+            --bg-code: #1a1a1f;
+            --border-subtle: rgba(255, 255, 255, 0.06);
+            --border-default: rgba(255, 255, 255, 0.1);
+            --text-primary: #fafafa;
+            --text-secondary: #a1a1aa;
+            --text-muted: #52525b;
+            --accent-green: #22c55e;
+            --accent-green-muted: rgba(34, 197, 94, 0.15);
+            --accent-yellow: #eab308;
+            --accent-blue: #3b82f6;
+            --accent-purple: #a855f7;
+            --accent-red: #ef4444;
+            --brand-primary: #00ff41;
+            --brand-glow: rgba(0, 255, 65, 0.2);
+            --font-display: 'Orbitron', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --font-body: 'IBM Plex Sans', -apple-system, sans-serif;
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { font-size: 15px; scroll-behavior: smooth; }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        .nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(10, 10, 11, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 16px 0;
+        }
+
+        .nav-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--brand-primary);
+            text-decoration: none;
+            letter-spacing: 3px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .nav-link:hover { color: var(--text-primary); }
+        .nav-link.active { color: var(--brand-primary); }
+
+        .nav-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--accent-green);
+            padding: 6px 12px;
+            background: var(--accent-green-muted);
+            border-radius: var(--radius-sm);
+        }
+
+        .nav-status-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--accent-green);
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Layout */
+        .docs-layout {
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            max-width: 1400px;
+            margin: 0 auto;
+            min-height: calc(100vh - 60px);
+        }
+
+        @media (max-width: 900px) {
+            .docs-layout {
+                grid-template-columns: 1fr;
+            }
+            .docs-sidebar {
+                display: none;
+            }
+        }
+
+        /* Sidebar */
+        .docs-sidebar {
+            position: sticky;
+            top: 60px;
+            height: calc(100vh - 60px);
+            overflow-y: auto;
+            padding: 32px 24px;
+            border-right: 1px solid var(--border-subtle);
+        }
+
+        .sidebar-section {
+            margin-bottom: 28px;
+        }
+
+        .sidebar-title {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .sidebar-links {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .sidebar-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            padding: 6px 12px;
+            border-radius: var(--radius-sm);
+            transition: all 0.2s;
+        }
+
+        .sidebar-link:hover {
+            color: var(--text-primary);
+            background: var(--bg-elevated);
+        }
+
+        .sidebar-link.active {
+            color: var(--brand-primary);
+            background: var(--brand-glow);
+        }
+
+        /* Main Content */
+        .docs-content {
+            padding: 48px;
+            max-width: 900px;
+        }
+
+        .docs-content h1 {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            margin-bottom: 16px;
+        }
+
+        .docs-content h2 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin: 48px 0 16px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .docs-content h2:first-of-type {
+            border-top: none;
+            padding-top: 0;
+            margin-top: 32px;
+        }
+
+        .docs-content h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 32px 0 12px;
+        }
+
+        .docs-content p {
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        .docs-content ul, .docs-content ol {
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            padding-left: 24px;
+        }
+
+        .docs-content li {
+            margin-bottom: 8px;
+        }
+
+        .docs-content a {
+            color: var(--brand-primary);
+            text-decoration: none;
+        }
+
+        .docs-content a:hover {
+            text-decoration: underline;
+        }
+
+        /* Code Blocks */
+        .code-block {
+            background: var(--bg-code);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            margin: 16px 0 24px;
+            overflow: hidden;
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 16px;
+            background: var(--bg-elevated);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .code-lang {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .code-copy {
+            background: transparent;
+            border: 1px solid var(--border-default);
+            color: var(--text-muted);
+            padding: 4px 10px;
+            border-radius: var(--radius-sm);
+            font-size: 0.75rem;
+            cursor: pointer;
+            font-family: var(--font-mono);
+        }
+
+        .code-copy:hover {
+            border-color: var(--brand-primary);
+            color: var(--brand-primary);
+        }
+
+        .code-body {
+            padding: 16px;
+            overflow-x: auto;
+        }
+
+        .code-body pre {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            line-height: 1.6;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        /* Syntax Highlighting */
+        .token-string { color: #a5d6ff; }
+        .token-number { color: #79c0ff; }
+        .token-keyword { color: #ff7b72; }
+        .token-property { color: #7ee787; }
+        .token-comment { color: #8b949e; }
+
+        /* Inline Code */
+        code {
+            font-family: var(--font-mono);
+            font-size: 0.85em;
+            background: var(--bg-elevated);
+            padding: 2px 6px;
+            border-radius: var(--radius-sm);
+            color: var(--accent-purple);
+        }
+
+        /* Method Badges */
+        .method-badge {
+            display: inline-block;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: var(--radius-sm);
+            margin-right: 8px;
+        }
+
+        .method-get { background: var(--accent-green-muted); color: var(--accent-green); }
+        .method-post { background: rgba(59, 130, 246, 0.15); color: var(--accent-blue); }
+        .method-patch { background: rgba(234, 179, 8, 0.15); color: var(--accent-yellow); }
+        .method-delete { background: rgba(239, 68, 68, 0.15); color: var(--accent-red); }
+
+        /* Endpoint */
+        .endpoint {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            margin: 16px 0;
+        }
+
+        .endpoint-path {
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            color: var(--text-primary);
+        }
+
+        /* Tables */
+        .params-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0 24px;
+        }
+
+        .params-table th,
+        .params-table td {
+            text-align: left;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .params-table th {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .params-table td {
+            font-size: 0.9rem;
+        }
+
+        .param-name {
+            font-family: var(--font-mono);
+            color: var(--accent-purple);
+        }
+
+        .param-type {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .param-required {
+            color: var(--accent-red);
+            font-size: 0.75rem;
+        }
+
+        /* Alert Boxes */
+        .alert {
+            padding: 16px 20px;
+            border-radius: var(--radius-md);
+            margin: 20px 0;
+            display: flex;
+            gap: 12px;
+        }
+
+        .alert-info {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .alert-warning {
+            background: rgba(234, 179, 8, 0.1);
+            border: 1px solid rgba(234, 179, 8, 0.3);
+        }
+
+        .alert-icon {
+            flex-shrink: 0;
+            font-size: 1.2rem;
+        }
+
+        .alert-content {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* Base URL Block */
+        .base-url {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--brand-primary);
+            border-radius: var(--radius-md);
+            margin: 24px 0;
+        }
+
+        .base-url-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .base-url-value {
+            font-family: var(--font-mono);
+            font-size: 1rem;
+            color: var(--brand-primary);
+        }
+
+        /* Footer */
+        footer {
+            padding: 32px 48px;
+            border-top: 1px solid var(--border-subtle);
+            margin-top: 60px;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 900px;
+        }
+
+        .footer-copy {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="/" class="nav-brand">NEUREON</a>
+            <div class="nav-links">
+                <a href="/" class="nav-link">Home</a>
+                <a href="/scanner.html" class="nav-link">Scanner</a>
+                <a href="/docs.html" class="nav-link active">API Docs</a>
+                <a href="/pricing.html" class="nav-link">Pricing</a>
+                <a href="/contact.html" class="nav-link">Contact</a>
+                <div class="nav-status">
+                    <div class="nav-status-dot"></div>
+                    <span>API ONLINE</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="docs-layout">
+        <!-- Sidebar -->
+        <aside class="docs-sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-title">Getting Started</div>
+                <div class="sidebar-links">
+                    <a href="#overview" class="sidebar-link active">Overview</a>
+                    <a href="#authentication" class="sidebar-link">Authentication</a>
+                    <a href="#quickstart" class="sidebar-link">Quickstart</a>
+                </div>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-title">Endpoints</div>
+                <div class="sidebar-links">
+                    <a href="#detect" class="sidebar-link">Fraud Detection</a>
+                    <a href="#batch" class="sidebar-link">Batch Processing</a>
+                    <a href="#sar" class="sidebar-link">SAR Generator</a>
+                    <a href="#webhooks" class="sidebar-link">Webhooks</a>
+                    <a href="#analytics" class="sidebar-link">Analytics</a>
+                </div>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-title">Reference</div>
+                <div class="sidebar-links">
+                    <a href="#patterns" class="sidebar-link">Detection Patterns</a>
+                    <a href="#errors" class="sidebar-link">Error Codes</a>
+                    <a href="#limits" class="sidebar-link">Rate Limits</a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="docs-content">
+            <h1>API DOCUMENTATION</h1>
+            <p>
+                The FraudGod API provides real-time synthetic identity detection for credit applications. 
+                This documentation covers authentication, endpoints, and integration examples.
+            </p>
+
+            <div class="base-url">
+                <span class="base-url-label">Base URL</span>
+                <span class="base-url-value">https://api.neureon.group</span>
+            </div>
+
+            <h2 id="overview">Overview</h2>
+            <p>
+                FraudGod uses a hybrid detection engine combining rule-based pattern matching with machine learning 
+                to identify synthetic identities. The API analyzes SSN structure, credit behavior, device signals, 
+                and application velocity to generate risk scores and recommendations.
+            </p>
+            <p>Key capabilities:</p>
+            <ul>
+                <li><strong>Real-time Detection</strong> — Sub-100ms response times for inline decisioning</li>
+                <li><strong>Batch Processing</strong> — Scan up to 500 records per request for portfolio review</li>
+                <li><strong>SAR Generation</strong> — Auto-generate FinCEN-compliant narratives</li>
+                <li><strong>Webhooks</strong> — Real-time alerts to Slack, Discord, or any HTTP endpoint</li>
+            </ul>
+
+            <h2 id="authentication">Authentication</h2>
+            <p>
+                All API requests require an API key passed in the <code>X-API-Key</code> header. 
+                Contact us to obtain your production API key.
+            </p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">HTTP Header</span>
+                </div>
+                <div class="code-body">
+<pre>X-API-Key: your_api_key_here</pre>
+                </div>
+            </div>
+
+            <div class="alert alert-warning">
+                <span class="alert-icon">⚠️</span>
+                <div class="alert-content">
+                    Keep your API key secure. Do not expose it in client-side code or public repositories.
+                </div>
+            </div>
+
+            <h2 id="quickstart">Quickstart</h2>
+            <p>Here's a complete example detecting fraud on a credit application:</p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">cURL</span>
+                    <button class="code-copy" onclick="copyCode(this)">Copy</button>
+                </div>
+                <div class="code-body">
+<pre>curl -X POST https://api.neureon.group/api/v2/detect \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: your_api_key" \
+  -d '{
+    "ssn": "123-45-6789",
+    "credit_score": 720,
+    "credit_file_months": 8,
+    "authorized_user_accounts": 6,
+    "phone_carrier": "Mint Mobile",
+    "is_vpn": false
+  }'</pre>
+                </div>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Python</span>
+                    <button class="code-copy" onclick="copyCode(this)">Copy</button>
+                </div>
+                <div class="code-body">
+<pre><span class="token-keyword">import</span> requests
+
+response = requests.post(
+    <span class="token-string">"https://api.neureon.group/api/v2/detect"</span>,
+    headers={<span class="token-string">"X-API-Key"</span>: <span class="token-string">"your_api_key"</span>},
+    json={
+        <span class="token-string">"ssn"</span>: <span class="token-string">"123-45-6789"</span>,
+        <span class="token-string">"credit_score"</span>: <span class="token-number">720</span>,
+        <span class="token-string">"credit_file_months"</span>: <span class="token-number">8</span>,
+        <span class="token-string">"authorized_user_accounts"</span>: <span class="token-number">6</span>
+    }
+)
+
+result = response.json()
+<span class="token-keyword">print</span>(f<span class="token-string">"Risk: {result['risk_assessment']['combined_score']}"</span>)
+<span class="token-keyword">print</span>(f<span class="token-string">"Decision: {result['risk_assessment']['recommendation']}"</span>)</pre>
+                </div>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">JavaScript</span>
+                    <button class="code-copy" onclick="copyCode(this)">Copy</button>
+                </div>
+                <div class="code-body">
+<pre><span class="token-keyword">const</span> response = <span class="token-keyword">await</span> fetch(<span class="token-string">'https://api.neureon.group/api/v2/detect'</span>, {
+  method: <span class="token-string">'POST'</span>,
+  headers: {
+    <span class="token-string">'Content-Type'</span>: <span class="token-string">'application/json'</span>,
+    <span class="token-string">'X-API-Key'</span>: <span class="token-string">'your_api_key'</span>
+  },
+  body: JSON.stringify({
+    ssn: <span class="token-string">'123-45-6789'</span>,
+    credit_score: <span class="token-number">720</span>,
+    credit_file_months: <span class="token-number">8</span>,
+    authorized_user_accounts: <span class="token-number">6</span>
+  })
+});
+
+<span class="token-keyword">const</span> result = <span class="token-keyword">await</span> response.json();
+console.log(<span class="token-string">`Risk: ${result.risk_assessment.combined_score}`</span>);</pre>
+                </div>
+            </div>
+
+            <h2 id="detect">Fraud Detection</h2>
+            <p>The primary detection endpoint analyzes an application and returns a risk assessment.</p>
+
+            <div class="endpoint">
+                <span class="method-badge method-post">POST</span>
+                <span class="endpoint-path">/api/v2/detect</span>
+            </div>
+
+            <h3>Request Parameters</h3>
+            <table class="params-table">
+                <thead>
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="param-name">ssn</span> <span class="param-required">required</span></td>
+                        <td><span class="param-type">string</span></td>
+                        <td>Social Security Number (any format accepted)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="param-name">credit_score</span></td>
+                        <td><span class="param-type">integer</span></td>
+                        <td>Applicant's credit score (300-850)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="param-name">credit_file_months</span></td>
+                        <td><span class="param-type">integer</span></td>
+                        <td>Age of credit file in months</td>
+                    </tr>
+                    <tr>
+                        <td><span class="param-name">authorized_user_accounts</span></td>
+                        <td><span class="param-type">integer</span></td>
+                        <td>Number of AU tradelines</td>
+                    </tr>
+                    <tr>
+                        <td><span class="param-name">phone_carrier</span></td>
+                        <td><span class="param-type">string</span></td>
+                        <td>Mobile carrier name</td>
+                    </tr>
+                    <tr>
+                        <td><span class="param-name">address_history_count</span></td>
+                        <td><span class="param-type">integer</span></td>
+                        <td>Number of previous addresses</td>
+                    </tr>
+                    <tr>
+                        <td><span class="param-name">applications_24h</span></td>
+                        <td><span class="param-type">integer</span></td>
+                        <td>Applications in last 24 hours</td>
+                    </tr>
+                    <tr>
+                        <td><span class="param-name">is_vpn</span></td>
+                        <td><span class="param-type">boolean</span></td>
+                        <td>VPN detected on connection</td>
+                    </tr>
+                    <tr>
+                        <td><span class="param-name">is_emulator</span></td>
+                        <td><span class="param-type">boolean</span></td>
+                        <td>Device emulator detected</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Response</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">JSON Response</span>
+                </div>
+                <div class="code-body">
+<pre>{
+  <span class="token-property">"status"</span>: <span class="token-string">"success"</span>,
+  <span class="token-property">"application_id"</span>: <span class="token-string">"a1b2c3d4e5f6"</span>,
+  <span class="token-property">"risk_assessment"</span>: {
+    <span class="token-property">"combined_score"</span>: <span class="token-number">0.847</span>,
+    <span class="token-property">"category"</span>: <span class="token-string">"high"</span>,
+    <span class="token-property">"auto_deny"</span>: <span class="token-keyword">true</span>,
+    <span class="token-property">"recommendation"</span>: <span class="token-string">"AUTO-DENY"</span>
+  },
+  <span class="token-property">"patterns"</span>: {
+    <span class="token-property">"total_triggered"</span>: <span class="token-number">3</span>,
+    <span class="token-property">"pattern_ids"</span>: [
+      <span class="token-string">"V1-IMPOSSIBLE_CREDIT_VELOCITY"</span>,
+      <span class="token-string">"V1-AU_TRADELINE_STUFFING"</span>,
+      <span class="token-string">"V1-HIGH_RISK_CARRIER"</span>
+    ]
+  },
+  <span class="token-property">"response_time_ms"</span>: <span class="token-number">47</span>
+}</pre>
+                </div>
+            </div>
+
+            <h3>Decision Values</h3>
+            <table class="params-table">
+                <thead>
+                    <tr><th>Decision</th><th>Risk Score</th><th>Recommended Action</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>APPROVE</code></td><td>&lt; 0.20</td><td>Standard processing</td></tr>
+                    <tr><td><code>REVIEW</code></td><td>0.20 - 0.35</td><td>Manual analyst review</td></tr>
+                    <tr><td><code>STEP-UP</code></td><td>0.35 - 0.60</td><td>Additional verification required</td></tr>
+                    <tr><td><code>DENY</code></td><td>0.60 - 0.85</td><td>Decline application</td></tr>
+                    <tr><td><code>AUTO-DENY</code></td><td>&gt; 0.85</td><td>Automatic decline, add to watchlist</td></tr>
+                </tbody>
+            </table>
+
+            <h2 id="batch">Batch Processing</h2>
+            <p>Scan multiple records in a single request. Ideal for portfolio reviews.</p>
+
+            <div class="endpoint">
+                <span class="method-badge method-post">POST</span>
+                <span class="endpoint-path">/api/v2/batch</span>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Request</span>
+                </div>
+                <div class="code-body">
+<pre>{
+  <span class="token-property">"records"</span>: [
+    {<span class="token-property">"id"</span>: <span class="token-string">"member_001"</span>, <span class="token-property">"ssn"</span>: <span class="token-string">"123-45-6789"</span>, <span class="token-property">"credit_score"</span>: <span class="token-number">720</span>},
+    {<span class="token-property">"id"</span>: <span class="token-string">"member_002"</span>, <span class="token-property">"ssn"</span>: <span class="token-string">"987-65-4321"</span>, <span class="token-property">"credit_score"</span>: <span class="token-number">680</span>}
+  ],
+  <span class="token-property">"include_patterns"</span>: <span class="token-keyword">true</span>
+}</pre>
+                </div>
+            </div>
+
+            <div class="alert alert-info">
+                <span class="alert-icon">ℹ️</span>
+                <div class="alert-content">
+                    Maximum 500 records per batch request. SSNs are masked in responses for security.
+                </div>
+            </div>
+
+            <h2 id="sar">SAR Generator</h2>
+            <p>Generate FinCEN-compliant Suspicious Activity Report narratives from detection results.</p>
+
+            <div class="endpoint">
+                <span class="method-badge method-post">POST</span>
+                <span class="endpoint-path">/api/v2/sar/generate</span>
+            </div>
+
+            <h2 id="webhooks">Webhooks</h2>
+            <p>Configure real-time alerts for high-risk detections.</p>
+
+            <div class="endpoint">
+                <span class="method-badge method-post">POST</span>
+                <span class="endpoint-path">/api/v2/webhooks</span>
+            </div>
+            <div class="endpoint">
+                <span class="method-badge method-get">GET</span>
+                <span class="endpoint-path">/api/v2/webhooks</span>
+            </div>
+            <div class="endpoint">
+                <span class="method-badge method-post">POST</span>
+                <span class="endpoint-path">/api/v2/webhooks/{id}/test</span>
+            </div>
+
+            <p>Supported webhook types: <code>slack</code>, <code>discord</code>, <code>generic</code></p>
+
+            <h2 id="analytics">Analytics</h2>
+            <p>Retrieve detection statistics for your dashboard.</p>
+
+            <div class="endpoint">
+                <span class="method-badge method-get">GET</span>
+                <span class="endpoint-path">/api/v2/analytics?days=30</span>
+            </div>
+
+            <h2 id="patterns">Detection Patterns</h2>
+            <p>FraudGod detects the following synthetic identity indicators:</p>
+
+            <table class="params-table">
+                <thead>
+                    <tr><th>Pattern</th><th>Weight</th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>POSSIBLE_ITIN</code></td><td>0.95</td><td>SSN in 9XX series (ITIN/CPN range)</td></tr>
+                    <tr><td><code>EIN_RANGE_DETECTED</code></td><td>0.85</td><td>SSN in 80-95 area (EIN overlap)</td></tr>
+                    <tr><td><code>IMPOSSIBLE_CREDIT_VELOCITY</code></td><td>0.70</td><td>High score + young file age</td></tr>
+                    <tr><td><code>AU_TRADELINE_STUFFING</code></td><td>0.65</td><td>6+ authorized user accounts</td></tr>
+                    <tr><td><code>EMULATOR_DETECTED</code></td><td>0.85</td><td>Device emulator (fraud farm)</td></tr>
+                    <tr><td><code>APPLICATION_VELOCITY_ABUSE</code></td><td>0.60</td><td>4+ apps in 24 hours</td></tr>
+                    <tr><td><code>NO_ADDRESS_HISTORY</code></td><td>0.45</td><td>No previous addresses (ghost)</td></tr>
+                </tbody>
+            </table>
+
+            <h2 id="errors">Error Codes</h2>
+            <table class="params-table">
+                <thead>
+                    <tr><th>Status</th><th>Meaning</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>401</code></td><td>API key missing or invalid</td></tr>
+                    <tr><td><code>403</code></td><td>API key inactive or unauthorized</td></tr>
+                    <tr><td><code>429</code></td><td>Rate limit exceeded</td></tr>
+                    <tr><td><code>500</code></td><td>Internal server error</td></tr>
+                </tbody>
+            </table>
+
+            <h2 id="limits">Rate Limits</h2>
+            <p>
+                The API is rate limited to <strong>60 requests per minute</strong> per IP address. 
+                Batch endpoints count as a single request regardless of record count.
+            </p>
+            <p>
+                Need higher limits? <a href="/contact.html">Contact us</a> about enterprise plans.
+            </p>
+
+            <footer>
+                <div class="footer-content">
+                    <div class="footer-copy">© 2024 Neureon Group LLC</div>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <script>
+        function copyCode(btn) {
+            const code = btn.closest('.code-block').querySelector('pre').textContent;
+            navigator.clipboard.writeText(code);
+            btn.textContent = 'Copied!';
+            setTimeout(() => btn.textContent = 'Copy', 2000);
+        }
+
+        // Active sidebar link
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    document.querySelectorAll('.sidebar-link').forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === '#' + entry.target.id) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        }, { rootMargin: '-20% 0px -70% 0px' });
+
+        document.querySelectorAll('h2[id]').forEach(h2 => observer.observe(h2));
+    </script>
+</body>
+</html>
