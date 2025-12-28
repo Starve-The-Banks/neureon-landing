@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Successful - NEUREON</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;800&family=JetBrains+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-primary: #0a0a0b;
+            --bg-secondary: #111113;
+            --border-subtle: rgba(255, 255, 255, 0.06);
+            --text-primary: #fafafa;
+            --text-secondary: #a1a1aa;
+            --accent-green: #22c55e;
+            --accent-green-muted: rgba(34, 197, 94, 0.15);
+            --brand-primary: #00ff41;
+            --brand-glow: rgba(0, 255, 65, 0.2);
+            --font-display: 'Orbitron', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --font-body: 'IBM Plex Sans', -apple-system, sans-serif;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .success-container {
+            text-align: center;
+            max-width: 500px;
+        }
+
+        .success-icon {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 32px;
+            background: var(--accent-green-muted);
+            border: 2px solid var(--accent-green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: scaleIn 0.5s ease-out;
+        }
+
+        @keyframes scaleIn {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .success-icon svg {
+            width: 50px;
+            height: 50px;
+            color: var(--accent-green);
+        }
+
+        .success-title {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            margin-bottom: 16px;
+            color: var(--brand-primary);
+        }
+
+        .success-message {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            line-height: 1.7;
+            margin-bottom: 32px;
+        }
+
+        .order-details {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            margin-bottom: 32px;
+            text-align: left;
+        }
+
+        .order-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .order-row:last-child {
+            border-bottom: none;
+        }
+
+        .order-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .order-value {
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+        }
+
+        .next-steps {
+            background: var(--bg-secondary);
+            border: 1px solid var(--brand-primary);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            margin-bottom: 32px;
+        }
+
+        .next-steps h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .next-steps ul {
+            text-align: left;
+            color: var(--text-secondary);
+            padding-left: 20px;
+        }
+
+        .next-steps li {
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 28px;
+            border-radius: 4px;
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--brand-primary);
+            color: var(--bg-primary);
+        }
+
+        .btn-primary:hover {
+            filter: brightness(1.1);
+            box-shadow: 0 0 24px var(--brand-glow);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            margin-left: 12px;
+        }
+
+        .footer-note {
+            margin-top: 40px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .footer-note a {
+            color: var(--brand-primary);
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="success-container">
+        <div class="success-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="20 6 9 17 4 12"/>
+            </svg>
+        </div>
+        
+        <h1 class="success-title">PAYMENT RECEIVED</h1>
+        
+        <p class="success-message">
+            Thank you for choosing Neureon. Your payment has been processed successfully. 
+            We'll be in touch within 24 hours to get you set up.
+        </p>
+
+        <div class="order-details" id="order-details">
+            <div class="order-row">
+                <span class="order-label">Plan</span>
+                <span class="order-value" id="plan-name">—</span>
+            </div>
+            <div class="order-row">
+                <span class="order-label">Amount</span>
+                <span class="order-value" id="plan-amount">—</span>
+            </div>
+            <div class="order-row">
+                <span class="order-label">Transaction ID</span>
+                <span class="order-value" id="transaction-id">—</span>
+            </div>
+        </div>
+
+        <div class="next-steps">
+            <h3>What happens next?</h3>
+            <ul>
+                <li>You'll receive a confirmation email from PayPal</li>
+                <li>Our team will email you within 24 hours with your API credentials</li>
+                <li>We'll schedule a quick onboarding call if you'd like</li>
+                <li>Start detecting synthetic fraud in your applications</li>
+            </ul>
+        </div>
+
+        <div>
+            <a href="/scanner.html" class="btn btn-primary">Try the Scanner</a>
+            <a href="/docs.html" class="btn btn-secondary">Read the Docs</a>
+        </div>
+
+        <p class="footer-note">
+            Questions? Email us at <a href="mailto:hq@neureon.group">hq@neureon.group</a>
+        </p>
+    </div>
+
+    <script>
+        // Parse URL params from PayPal redirect
+        const params = new URLSearchParams(window.location.search);
+        const plan = params.get('plan');
+        const amount = params.get('amount');
+        const txn = params.get('txn');
+
+        if (plan) document.getElementById('plan-name').textContent = plan;
+        if (amount) document.getElementById('plan-amount').textContent = '$' + amount;
+        if (txn) document.getElementById('transaction-id').textContent = txn;
+    </script>
+</body>
+</html>
