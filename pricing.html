@@ -121,6 +121,69 @@
             color: var(--brand-primary);
         }
 
+        /* Mobile Navigation */
+        .nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            color: var(--text-primary);
+        }
+
+        .nav-toggle svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 16px;
+            }
+
+            .nav-toggle {
+                display: block;
+            }
+
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: var(--bg-primary);
+                border-bottom: 1px solid var(--border-subtle);
+                flex-direction: column;
+                padding: 16px;
+                gap: 16px;
+            }
+
+            .nav-links.open {
+                display: flex;
+            }
+
+            .nav-inner {
+                position: relative;
+            }
+
+            .page-header {
+                padding: 32px 0 24px;
+            }
+
+            .page-title {
+                font-size: 1.4rem;
+            }
+
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
         .nav-status {
             display: flex;
             align-items: center;
@@ -558,7 +621,14 @@
         <div class="container">
             <div class="nav-inner">
                 <a href="/" class="nav-brand">NEUREON</a>
-                <div class="nav-links">
+                <button class="nav-toggle" onclick="toggleNav()" aria-label="Toggle menu">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="3" y1="6" x2="21" y2="6"/>
+                        <line x1="3" y1="12" x2="21" y2="12"/>
+                        <line x1="3" y1="18" x2="21" y2="18"/>
+                    </svg>
+                </button>
+                <div class="nav-links" id="nav-links">
                     <a href="/" class="nav-link">Home</a>
                     <a href="/scanner.html" class="nav-link">Scanner</a>
                     <a href="/dashboard.html" class="nav-link">Dashboard</a>
@@ -871,6 +941,11 @@
     </footer>
 
     <script>
+        // Mobile nav toggle
+        function toggleNav() {
+            document.getElementById('nav-links').classList.toggle('open');
+        }
+
         let isAnnual = false;
 
         // Plan configuration

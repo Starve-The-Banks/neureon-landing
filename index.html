@@ -1313,10 +1313,58 @@
             opacity: 0;
         }
 
+        /* ========== MOBILE NAV ========== */
+        .nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            color: var(--neon-green);
+            z-index: 1001;
+        }
+
+        .nav-toggle svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .nav-links-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+        }
+
         /* ========== MOBILE RESPONSIVE ========== */
         @media (max-width: 768px) {
+            .nav-toggle {
+                display: block;
+            }
+
+            .nav-links-wrapper {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: rgba(0, 0, 0, 0.98);
+                flex-direction: column;
+                padding: 24px;
+                gap: 20px;
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .nav-links-wrapper.open {
+                display: flex;
+            }
+
+            .nav-links-wrapper a {
+                font-size: 1rem !important;
+            }
+
             .nav-content {
                 padding: 0 8px;
+                position: relative;
             }
             
             .logo {
@@ -1627,7 +1675,14 @@
         <div class="container">
             <div class="nav-content">
                 <a href="/" class="logo">NEUREON</a>
-                <div style="display: flex; align-items: center; gap: 32px;">
+                <button class="nav-toggle" onclick="toggleMobileNav()" aria-label="Toggle menu">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="3" y1="6" x2="21" y2="6"/>
+                        <line x1="3" y1="12" x2="21" y2="12"/>
+                        <line x1="3" y1="18" x2="21" y2="18"/>
+                    </svg>
+                </button>
+                <div class="nav-links-wrapper" id="nav-links-wrapper">
                     <a href="/scanner.html" style="color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.2s;" onmouseover="this.style.color='var(--neon-green)'" onmouseout="this.style.color='var(--text-secondary)'">Scanner</a>
                     <a href="/dashboard.html" style="color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.2s;" onmouseover="this.style.color='var(--neon-green)'" onmouseout="this.style.color='var(--text-secondary)'">Dashboard</a>
                     <a href="/docs.html" style="color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.2s;" onmouseover="this.style.color='var(--neon-green)'" onmouseout="this.style.color='var(--text-secondary)'">API Docs</a>
@@ -2005,6 +2060,11 @@
     </footer>
 
     <script>
+        // ========== MOBILE NAV TOGGLE ==========
+        function toggleMobileNav() {
+            document.getElementById('nav-links-wrapper').classList.toggle('open');
+        }
+
         // ========== MATRIX RAIN (Layer 1 - Deep Background) ==========
         const matrixCanvas = document.getElementById('matrix-canvas');
         const matrixCtx = matrixCanvas.getContext('2d');
